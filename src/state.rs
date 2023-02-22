@@ -2,23 +2,29 @@
 #[path = "state_test.rs"]
 mod state_test;
 
-use std::collections::HashMap;
-use std::fmt::Debug;
+#[cfg(feature = "std")]
+use std::collections::hash_map::RandomState as HasherBuilder;
 
+#[cfg(not(feature = "std"))]
+use hashbrown::hash_map::DefaultHashBuilder as HasherBuilder;
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 
-use crate::block::{BlockHash, BlockNumber};
-use crate::core::{
+use crate::api_core::{
     ClassHash, CompiledClassHash, ContractAddress, EntryPointSelector, GlobalRoot, Nonce,
     PatriciaKey,
 };
+use crate::block::{BlockHash, BlockNumber};
 use crate::deprecated_contract_class::ContractClass as DeprecatedContractClass;
 use crate::hash::{StarkFelt, StarkHash};
+use crate::stdlib::collections::HashMap;
+use crate::stdlib::fmt::Debug;
+use crate::stdlib::string::String;
+use crate::stdlib::vec::Vec;
 use crate::{impl_from_through_intermediate, StarknetApiError};
 
-pub type DeclaredClasses = IndexMap<ClassHash, ContractClass>;
-pub type DeprecatedDeclaredClasses = IndexMap<ClassHash, DeprecatedContractClass>;
+pub type DeclaredClasses = IndexMap<ClassHash, ContractClass, HasherBuilder>;
+pub type DeprecatedDeclaredClasses = IndexMap<ClassHash, DeprecatedContractClass, HasherBuilder>;
 
 /// The differences between two states before and after a block with hash block_hash
 /// and their respective roots.
@@ -36,12 +42,13 @@ pub struct StateUpdate {
 // TODO(yair): Enforce this invariant.
 #[derive(Debug, Default, Clone, Eq, PartialEq, Deserialize, Serialize)]
 pub struct StateDiff {
-    pub deployed_contracts: IndexMap<ContractAddress, ClassHash>,
-    pub storage_diffs: IndexMap<ContractAddress, IndexMap<StorageKey, StarkFelt>>,
-    pub declared_classes: IndexMap<ClassHash, (CompiledClassHash, ContractClass)>,
-    pub deprecated_declared_classes: IndexMap<ClassHash, DeprecatedContractClass>,
-    pub nonces: IndexMap<ContractAddress, Nonce>,
-    pub replaced_classes: IndexMap<ContractAddress, ClassHash>,
+    pub deployed_contracts: IndexMap<ContractAddress, ClassHash, HasherBuilder>,
+    pub storage_diffs:
+        IndexMap<ContractAddress, IndexMap<StorageKey, StarkFelt, HasherBuilder>, HasherBuilder>,
+    pub declared_classes: IndexMap<ClassHash, (CompiledClassHash, ContractClass), HasherBuilder>,
+    pub deprecated_declared_classes: IndexMap<ClassHash, DeprecatedContractClass, HasherBuilder>,
+    pub nonces: IndexMap<ContractAddress, Nonce, HasherBuilder>,
+    pub replaced_classes: IndexMap<ContractAddress, ClassHash, HasherBuilder>,
 }
 
 // Invariant: Addresses are strictly increasing.
@@ -49,12 +56,13 @@ pub struct StateDiff {
 // where the addresses are strictly increasing.
 #[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize)]
 pub struct ThinStateDiff {
-    pub deployed_contracts: IndexMap<ContractAddress, ClassHash>,
-    pub storage_diffs: IndexMap<ContractAddress, IndexMap<StorageKey, StarkFelt>>,
-    pub declared_classes: IndexMap<ClassHash, CompiledClassHash>,
+    pub deployed_contracts: IndexMap<ContractAddress, ClassHash, HasherBuilder>,
+    pub storage_diffs:
+        IndexMap<ContractAddress, IndexMap<StorageKey, StarkFelt, HasherBuilder>, HasherBuilder>,
+    pub declared_classes: IndexMap<ClassHash, CompiledClassHash, HasherBuilder>,
     pub deprecated_declared_classes: Vec<ClassHash>,
-    pub nonces: IndexMap<ContractAddress, Nonce>,
-    pub replaced_classes: IndexMap<ContractAddress, ClassHash>,
+    pub nonces: IndexMap<ContractAddress, Nonce, HasherBuilder>,
+    pub replaced_classes: IndexMap<ContractAddress, ClassHash, HasherBuilder>,
 }
 
 impl ThinStateDiff {
