@@ -48,7 +48,7 @@ pub fn pedersen_hash_array(felts: &[StarkFelt]) -> StarkHash {
 /// The StarkNet [field element](https://docs.starknet.io/documentation/architecture_and_concepts/Hashing/hash-functions/#domain_and_range).
 #[derive(Copy, Clone, Eq, PartialEq, Default, Hash, Deserialize, Serialize, PartialOrd, Ord)]
 #[serde(try_from = "PrefixedBytesAsHex<32_usize>", into = "PrefixedBytesAsHex<32_usize>")]
-pub struct StarkFelt([u8; 32]);
+pub struct StarkFelt(pub [u8; 32]);
 
 impl StarkFelt {
     /// Returns a new [`StarkFelt`].

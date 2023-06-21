@@ -11,6 +11,7 @@ use crate::deprecated_contract_class::ContractClassAbiEntry;
 use crate::stdlib::borrow::ToOwned;
 use crate::stdlib::fmt;
 use crate::stdlib::string::{String, ToString};
+use crate::stdlib::vec::Vec;
 
 /// A [BytesAsHex](`crate::serde_utils::BytesAsHex`) prefixed with '0x'.
 pub type PrefixedBytesAsHex<const N: usize> = BytesAsHex<N, true>;

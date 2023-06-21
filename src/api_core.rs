@@ -160,7 +160,7 @@ pub struct GlobalRoot(pub StarkHash);
 /// A key for nodes of a Patricia tree.
 // Invariant: key is in range.
 #[derive(Copy, Clone, Eq, PartialEq, Default, Hash, Deserialize, Serialize, PartialOrd, Ord)]
-pub struct PatriciaKey(StarkHash);
+pub struct PatriciaKey(pub StarkHash);
 
 // 2**251
 pub const PATRICIA_KEY_UPPER_BOUND: &str =
