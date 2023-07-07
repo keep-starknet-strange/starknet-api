@@ -48,10 +48,7 @@ pub fn pedersen_hash_array(felts: &[StarkFelt]) -> StarkHash {
 /// The StarkNet [field element](https://docs.starknet.io/documentation/architecture_and_concepts/Hashing/hash-functions/#domain_and_range).
 #[derive(Copy, Clone, Eq, PartialEq, Default, Hash, Deserialize, Serialize, PartialOrd, Ord)]
 #[serde(try_from = "PrefixedBytesAsHex<32_usize>", into = "PrefixedBytesAsHex<32_usize>")]
-#[cfg_attr(
-    feature = "parity-scale-codec",
-    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
-)]
+#[cfg_attr(feature = "scale-info", derive(parity_scale_codec::Encode, parity_scale_codec::Decode))]
 pub struct StarkFelt(pub [u8; 32]);
 
 impl StarkFelt {

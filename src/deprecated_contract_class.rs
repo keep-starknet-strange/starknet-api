@@ -1,6 +1,4 @@
 use cairo_lang_casm_contract_class::CasmContractEntryPoint;
-#[cfg(feature = "parity-scale-codec")]
-use parity_scale_codec::{Decode, Encode};
 use serde::de::Error as DeserializationError;
 use serde::{Deserialize, Deserializer, Serialize};
 use serde_json::Value;
@@ -112,7 +110,7 @@ pub struct Program {
     Debug, Default, Clone, Copy, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
 #[serde(deny_unknown_fields)]
-#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
+#[cfg_attr(feature = "scale-info", derive(parity_scale_codec::Encode, parity_scale_codec::Decode))]
 pub enum EntryPointType {
     /// A constructor entry point.
     #[serde(rename = "CONSTRUCTOR")]
@@ -128,7 +126,7 @@ pub enum EntryPointType {
 
 /// An entry point of a [ContractClass](`crate::deprecated_contract_class::ContractClass`).
 #[derive(Debug, Default, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
-#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
+#[cfg_attr(feature = "scale-info", derive(parity_scale_codec::Encode, parity_scale_codec::Decode))]
 pub struct EntryPoint {
     pub selector: EntryPointSelector,
     pub offset: EntryPointOffset,
@@ -180,15 +178,15 @@ fn hex_string_try_into_usize(hex_string: &str) -> Result<usize, crate::stdlib::n
     usize::from_str_radix(hex_string.trim_start_matches("0x"), 16)
 }
 
-#[cfg(feature = "parity-scale-codec")]
-impl Encode for EntryPointOffset {
+#[cfg(feature = "scale-info")]
+impl parity_scale_codec::Encode for EntryPointOffset {
     fn encode(&self) -> Vec<u8> {
         (self.0 as u64).encode()
     }
 }
 
-#[cfg(feature = "parity-scale-codec")]
-impl Decode for EntryPointOffset {
+#[cfg(feature = "scale-info")]
+impl parity_scale_codec::Decode for EntryPointOffset {
     fn decode<I: parity_scale_codec::Input>(
         input: &mut I,
     ) -> Result<Self, parity_scale_codec::Error> {

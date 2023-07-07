@@ -11,6 +11,8 @@ description = "Starknet Rust types related to computation and execution."
 default = ["std"]
 std = ["serde_json/std", "hex/std"]
 testing = []
+scale-info = ["dep:parity-scale-codec", "primitive-types/scale-info"]
+
 
 [dependencies]
 once_cell = { version = "1.17.1", default-features = false }

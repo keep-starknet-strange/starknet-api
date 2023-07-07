@@ -72,6 +72,7 @@ pub enum BlockStatus {
     Ord,
     Display,
 )]
+#[cfg_attr(feature = "scale-info", derive(parity_scale_codec::Encode, parity_scale_codec::Decode))]
 pub struct BlockHash(pub StarkHash);
 
 /// The number of a [Block](`crate::block::Block`).
@@ -89,6 +90,7 @@ pub struct BlockHash(pub StarkHash);
     PartialOrd,
     Ord,
 )]
+#[cfg_attr(feature = "scale-info", derive(parity_scale_codec::Encode, parity_scale_codec::Decode,))]
 pub struct BlockNumber(pub u64);
 
 impl BlockNumber {

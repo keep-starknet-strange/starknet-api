@@ -29,10 +29,7 @@ impl ChainId {
 #[derive(
     Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
-#[cfg_attr(
-    feature = "parity-scale-codec",
-    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
-)]
+#[cfg_attr(feature = "scale-info", derive(parity_scale_codec::Encode, parity_scale_codec::Decode))]
 pub struct ContractAddress(pub PatriciaKey);
 
 /// The maximal size of storage var.
@@ -101,10 +98,7 @@ pub fn calculate_contract_address(
     Ord,
     Display,
 )]
-#[cfg_attr(
-    feature = "parity-scale-codec",
-    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
-)]
+#[cfg_attr(feature = "scale-info", derive(parity_scale_codec::Encode, parity_scale_codec::Decode))]
 pub struct ClassHash(pub StarkHash);
 
 /// The hash of a compiled ContractClass.
@@ -122,30 +116,21 @@ pub struct ClassHash(pub StarkHash);
     Ord,
     Display,
 )]
-#[cfg_attr(
-    feature = "parity-scale-codec",
-    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
-)]
+#[cfg_attr(feature = "scale-info", derive(parity_scale_codec::Encode, parity_scale_codec::Decode))]
 pub struct CompiledClassHash(pub StarkHash);
 
 /// A general type for nonces.
 #[derive(
     Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
-#[cfg_attr(
-    feature = "parity-scale-codec",
-    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
-)]
+#[cfg_attr(feature = "scale-info", derive(parity_scale_codec::Encode, parity_scale_codec::Decode))]
 pub struct Nonce(pub StarkFelt);
 
 /// The selector of an [EntryPoint](`crate::deprecated_contract_class::EntryPoint`).
 #[derive(
     Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
-#[cfg_attr(
-    feature = "parity-scale-codec",
-    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
-)]
+#[cfg_attr(feature = "scale-info", derive(parity_scale_codec::Encode, parity_scale_codec::Decode))]
 pub struct EntryPointSelector(pub StarkHash);
 
 /// The root of the global state at a [Block](`crate::block::Block`)
@@ -169,10 +154,7 @@ pub struct GlobalRoot(pub StarkHash);
 /// A key for nodes of a Patricia tree.
 // Invariant: key is in range.
 #[derive(Copy, Clone, Eq, PartialEq, Default, Hash, Deserialize, Serialize, PartialOrd, Ord)]
-#[cfg_attr(
-    feature = "parity-scale-codec",
-    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
-)]
+#[cfg_attr(feature = "scale-info", derive(parity_scale_codec::Encode, parity_scale_codec::Decode))]
 pub struct PatriciaKey(pub StarkHash);
 
 // 2**251
