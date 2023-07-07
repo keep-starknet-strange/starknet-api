@@ -110,7 +110,7 @@ pub struct Program {
     Debug, Default, Clone, Copy, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
 #[serde(deny_unknown_fields)]
-#[cfg_attr(feature = "scale-info", derive(parity_scale_codec::Encode, parity_scale_codec::Decode))]
+#[cfg_attr(feature = "codec", derive(scale_codec::Encode, scale_codec::Decode))]
 pub enum EntryPointType {
     /// A constructor entry point.
     #[serde(rename = "CONSTRUCTOR")]
@@ -126,7 +126,7 @@ pub enum EntryPointType {
 
 /// An entry point of a [ContractClass](`crate::deprecated_contract_class::ContractClass`).
 #[derive(Debug, Default, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
-#[cfg_attr(feature = "scale-info", derive(parity_scale_codec::Encode, parity_scale_codec::Decode))]
+#[cfg_attr(feature = "codec", derive(scale_codec::Encode, scale_codec::Decode))]
 pub struct EntryPoint {
     pub selector: EntryPointSelector,
     pub offset: EntryPointOffset,
@@ -178,18 +178,16 @@ fn hex_string_try_into_usize(hex_string: &str) -> Result<usize, crate::stdlib::n
     usize::from_str_radix(hex_string.trim_start_matches("0x"), 16)
 }
 
-#[cfg(feature = "scale-info")]
-impl parity_scale_codec::Encode for EntryPointOffset {
+#[cfg(feature = "codec")]
+impl scale_codec::Encode for EntryPointOffset {
     fn encode(&self) -> Vec<u8> {
         (self.0 as u64).encode()
     }
 }
 
-#[cfg(feature = "scale-info")]
-impl parity_scale_codec::Decode for EntryPointOffset {
-    fn decode<I: parity_scale_codec::Input>(
-        input: &mut I,
-    ) -> Result<Self, parity_scale_codec::Error> {
+#[cfg(feature = "codec")]
+impl scale_codec::Decode for EntryPointOffset {
+    fn decode<I: scale_codec::Input>(input: &mut I) -> Result<Self, scale_codec::Error> {
         Ok(Self(<u64>::decode(input)? as usize))
     }
 }
