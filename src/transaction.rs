@@ -2,6 +2,9 @@ use derive_more::From;
 use primitive_types::H160;
 use serde::{Deserialize, Serialize};
 
+#[cfg(feature = "parity-scale-codec")]
+use parity_scale_codec::{Decode, Encode};
+
 use crate::api_core::{ClassHash, CompiledClassHash, ContractAddress, EntryPointSelector, Nonce};
 use crate::block::{BlockHash, BlockNumber};
 use crate::hash::{StarkFelt, StarkHash};
@@ -279,6 +282,7 @@ pub struct TransactionReceipt {
     Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
 #[serde(from = "PrefixedBytesAsHex<16_usize>", into = "PrefixedBytesAsHex<16_usize>")]
+#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
 pub struct Fee(pub u128);
 
 impl From<PrefixedBytesAsHex<16_usize>> for Fee {
@@ -329,6 +333,7 @@ pub struct TransactionVersion(pub StarkFelt);
 
 /// The calldata of a transaction.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
 pub struct Calldata(pub Arc<Vec<StarkFelt>>);
 
 #[macro_export]
@@ -347,6 +352,7 @@ pub struct MessageToL2 {
 
 /// An L2 to L1 message.
 #[derive(Debug, Default, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
 pub struct MessageToL1 {
     pub from_address: ContractAddress,
     pub to_address: EthAddress,
@@ -357,6 +363,7 @@ pub struct MessageToL1 {
 #[derive(
     Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
+#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
 pub struct EthAddress(pub H160);
 
 impl TryFrom<StarkFelt> for EthAddress {
@@ -379,10 +386,13 @@ pub struct L1ToL2Payload(pub Vec<StarkFelt>);
 
 /// The payload of [`MessageToL1`].
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+
+#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
 pub struct L2ToL1Payload(pub Vec<StarkFelt>);
 
 /// An event.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
 pub struct Event {
     pub from_address: ContractAddress,
     #[serde(flatten)]
@@ -391,6 +401,7 @@ pub struct Event {
 
 /// An event content.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
 pub struct EventContent {
     pub keys: Vec<EventKey>,
     pub data: EventData,
@@ -398,10 +409,12 @@ pub struct EventContent {
 
 /// An event key.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
 pub struct EventKey(pub StarkFelt);
 
 /// An event data.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
 pub struct EventData(pub Vec<StarkFelt>);
 
 /// The index of a transaction in [BlockBody](`crate::block::BlockBody`).
