@@ -10,7 +10,7 @@ description = "Starknet Rust types related to computation and execution."
 [features]
 default = ["std"]
 std = ["serde_json/std", "hex/std"]
-parity-scale-codec = ["dep:parity-scale-codec", "primitive-types/codec"]
+parity-scale-codec = ["dep:parity-scale-codec"]
 testing = []
 
 [dependencies]
