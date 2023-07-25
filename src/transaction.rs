@@ -363,27 +363,8 @@ pub struct MessageToL1 {
 #[derive(
     Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
+#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
 pub struct EthAddress(pub H160);
-
-/// We could enable scale derivation with "codec" feature in "primitive-types" crate instead
-
-#[cfg(feature = "parity-scale-codec")]
-impl Encode for EthAddress {
-    fn encode(&self) -> Vec<u8> {
-        self.0.as_bytes().to_vec()
-    }
-}
-
-#[cfg(feature = "parity-scale-codec")]
-impl Decode for EthAddress {
-    fn decode<I: parity_scale_codec::Input>(
-        input: &mut I,
-    ) -> Result<Self, parity_scale_codec::Error> {
-        let mut buffer = [0u8; 20];
-        input.read(&mut buffer)?;
-        Ok(Self(H160::from_slice(buffer.as_slice())))
-    }
-}
 
 impl TryFrom<StarkFelt> for EthAddress {
     type Error = StarknetApiError;
