@@ -33,6 +33,7 @@ impl ChainId {
 #[derive(
     Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
+#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
 pub struct ContractAddress(pub PatriciaKey);
 
 impl From<u128> for ContractAddress {
@@ -109,6 +110,7 @@ pub fn calculate_contract_address(
     Ord,
     Display,
 )]
+#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
 pub struct ClassHash(pub StarkHash);
 
 /// The hash of a compiled ContractClass.
@@ -162,6 +164,7 @@ pub struct GlobalRoot(pub StarkHash);
 /// A key for nodes of a Patricia tree.
 // Invariant: key is in range.
 #[derive(Copy, Clone, Eq, PartialEq, Default, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
 pub struct PatriciaKey(pub StarkHash);
 
 // 2**251

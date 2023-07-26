@@ -2,6 +2,9 @@
 #[path = "state_test.rs"]
 mod state_test;
 
+#[cfg(feature = "parity-scale-codec")]
+use parity_scale_codec::{Decode, Encode};
+
 #[cfg(feature = "std")]
 use std::collections::hash_map::RandomState as HasherBuilder;
 
@@ -137,6 +140,7 @@ impl StateNumber {
 #[derive(
     Debug, Default, Clone, Copy, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
+#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
 pub struct StorageKey(pub PatriciaKey);
 
 impl TryFrom<StarkHash> for StorageKey {
