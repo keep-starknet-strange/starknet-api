@@ -9,8 +9,9 @@ description = "Starknet Rust types related to computation and execution."
 
 [features]
 default = ["std"]
-std = ["serde_json/std", "hex/std", "primitive-types/std", "parity-scale-codec?/std"]
+std = ["serde_json/std", "hex/std", "primitive-types/std", "parity-scale-codec?/std", "scale-info?/std"]
 parity-scale-codec = ["dep:parity-scale-codec", "primitive-types/codec"]
+scale-info = ["dep:scale-info", "primitive-types/scale-info"]
 testing = []
 
 [dependencies]
@@ -38,9 +39,11 @@ derive_more = { version = "0.99.17", default-features = false, features = [
 ] }
 hashbrown = { version = "0.14.0", features = ["serde"] }
 
+# Optional dependencies
 parity-scale-codec = { version = "3.6.0", default-features = false, features = [
     "derive",
 ], optional = true }
+scale-info = { version = "2.9.0", default-features = false, optional = true }
 
 [dev-dependencies]
 assert_matches = "1.5.0"

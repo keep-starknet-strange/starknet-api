@@ -536,6 +536,7 @@ dependencies = [
  "fixed-hash",
  "impl-codec",
  "impl-serde",
+ "scale-info",
  "uint",
 ]
 
@@ -617,6 +618,30 @@ name = "ryu"
 version = "1.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1ad4cc8da4ef723ed60bced201181d83791ad433213d8c24efffda1eec85d741"
+
+[[package]]
+name = "scale-info"
+version = "2.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "35c0a159d0c45c12b20c5a844feb1fe4bea86e28f17b92a5f0c42193634d3782"
+dependencies = [
+ "cfg-if 1.0.0",
+ "derive_more",
+ "parity-scale-codec",
+ "scale-info-derive",
+]
+
+[[package]]
+name = "scale-info-derive"
+version = "2.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "912e55f6d20e0e80d63733872b40e1227c0bce1e1ab81ba67d696339bfd7fd29"
+dependencies = [
+ "proc-macro-crate",
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
+]
 
 [[package]]
 name = "semver"
@@ -744,6 +769,7 @@ dependencies = [
  "once_cell",
  "parity-scale-codec",
  "primitive-types",
+ "scale-info",
  "serde",
  "serde_json",
  "starknet-crypto",

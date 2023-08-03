@@ -3,8 +3,6 @@
 mod api_core_test;
 
 use derive_more::Display;
-#[cfg(feature = "parity-scale-codec")]
-use parity_scale_codec::{Decode, Encode};
 use primitive_types::H160;
 use serde::{Deserialize, Serialize};
 use starknet_crypto::FieldElement;
@@ -33,7 +31,11 @@ impl ChainId {
 #[derive(
     Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
-#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct ContractAddress(pub PatriciaKey);
 
 impl From<u128> for ContractAddress {
@@ -110,7 +112,11 @@ pub fn calculate_contract_address(
     Ord,
     Display,
 )]
-#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct ClassHash(pub StarkHash);
 
 /// The hash of a compiled ContractClass.
@@ -140,7 +146,11 @@ pub struct Nonce(pub StarkFelt);
 #[derive(
     Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
-#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct EntryPointSelector(pub StarkHash);
 
 /// The root of the global state at a [Block](`crate::block::Block`)
@@ -164,7 +174,11 @@ pub struct GlobalRoot(pub StarkHash);
 /// A key for nodes of a Patricia tree.
 // Invariant: key is in range.
 #[derive(Copy, Clone, Eq, PartialEq, Default, Hash, Deserialize, Serialize, PartialOrd, Ord)]
-#[cfg_attr(feature = "parity-scale-codec", derive(Encode, Decode))]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct PatriciaKey(pub StarkHash);
 
 // 2**251

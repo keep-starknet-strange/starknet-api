@@ -5,8 +5,7 @@ edition = "2021"
 
 [dependencies]
 
-starknet_api = { path = "../", default-features = false, features = ["parity-scale-codec"] }
-
+starknet_api = { path = "../", default-features = false, features = ["parity-scale-codec", "scale-info"] }
 
 wee_alloc = "0.4.5"
 
