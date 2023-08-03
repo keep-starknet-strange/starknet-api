@@ -134,12 +134,22 @@ pub struct ClassHash(pub StarkHash);
     Ord,
     Display,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct CompiledClassHash(pub StarkHash);
 
 /// A general type for nonces.
 #[derive(
     Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct Nonce(pub StarkFelt);
 
 /// The selector of an [EntryPoint](`crate::deprecated_contract_class::EntryPoint`).

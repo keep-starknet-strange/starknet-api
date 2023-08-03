@@ -68,6 +68,11 @@ impl TransactionOutput {
 
 /// A declare V0 or V1 transaction (same schema but different version).
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct DeclareTransactionV0V1 {
     pub max_fee: Fee,
     pub signature: TransactionSignature,
@@ -78,6 +83,11 @@ pub struct DeclareTransactionV0V1 {
 
 /// A declare V2 transaction.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct DeclareTransactionV2 {
     pub max_fee: Fee,
     pub signature: TransactionSignature,
@@ -88,6 +98,11 @@ pub struct DeclareTransactionV2 {
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum DeclareTransaction {
     V0(DeclareTransactionV0V1),
     V1(DeclareTransactionV0V1),
@@ -126,6 +141,11 @@ impl DeclareTransaction {
 
 /// A deploy account transaction.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct DeployAccountTransaction {
     pub max_fee: Fee,
     pub version: TransactionVersion,
@@ -138,6 +158,11 @@ pub struct DeployAccountTransaction {
 
 /// A deploy transaction.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct DeployTransaction {
     pub version: TransactionVersion,
     pub class_hash: ClassHash,
@@ -147,6 +172,11 @@ pub struct DeployTransaction {
 
 /// An invoke V0 transaction.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct InvokeTransactionV0 {
     pub max_fee: Fee,
     pub signature: TransactionSignature,
@@ -157,6 +187,11 @@ pub struct InvokeTransactionV0 {
 
 /// An invoke V1 transaction.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct InvokeTransactionV1 {
     pub max_fee: Fee,
     pub signature: TransactionSignature,
@@ -166,6 +201,11 @@ pub struct InvokeTransactionV1 {
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, From)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum InvokeTransaction {
     V0(InvokeTransactionV0),
     V1(InvokeTransactionV1),
@@ -192,6 +232,11 @@ impl InvokeTransaction {
 
 /// An L1 handler transaction.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct L1HandlerTransaction {
     pub version: TransactionVersion,
     pub nonce: Nonce,
@@ -303,6 +348,11 @@ impl From<Fee> for StarkFelt {
 #[derive(
     Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct TransactionHash(pub StarkHash);
 
 impl Display for TransactionHash {
@@ -315,16 +365,31 @@ impl Display for TransactionHash {
 #[derive(
     Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct ContractAddressSalt(pub StarkHash);
 
 /// A transaction signature.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct TransactionSignature(pub Vec<StarkFelt>);
 
 /// A transaction version.
 #[derive(
     Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct TransactionVersion(pub StarkFelt);
 
 /// The calldata of a transaction.
