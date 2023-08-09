@@ -3,7 +3,6 @@
 mod api_core_test;
 
 use derive_more::Display;
-use once_cell::sync::Lazy;
 #[cfg(feature = "parity-scale-codec")]
 use parity_scale_codec::{Decode, Encode};
 use primitive_types::H160;
@@ -238,7 +237,7 @@ pub struct EthAddress(pub H160);
 impl TryFrom<StarkFelt> for EthAddress {
     type Error = StarknetApiError;
     fn try_from(felt: StarkFelt) -> Result<Self, Self::Error> {
-        const COMPLIMENT_OF_H160: usize = std::mem::size_of::<StarkFelt>() - H160::len_bytes();
+        const COMPLIMENT_OF_H160: usize = core::mem::size_of::<StarkFelt>() - H160::len_bytes();
 
         let (rest, h160_bytes) = felt.bytes().split_at(COMPLIMENT_OF_H160);
         if rest != [0u8; COMPLIMENT_OF_H160] {

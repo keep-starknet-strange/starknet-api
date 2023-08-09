@@ -717,7 +717,7 @@ dependencies = [
 
 [[package]]
 name = "starknet_api"
-version = "0.1.0"
+version = "0.4.1"
 dependencies = [
  "cairo-lang-casm-contract-class",
  "derive_more",

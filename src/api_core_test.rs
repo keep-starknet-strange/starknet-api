@@ -77,6 +77,7 @@ fn eth_address_serde() {
     assert_eq!(restored, eth_address);
 }
 
+#[test]
 fn l2_address_upper_bound_has_correct_value() {
     let expected_l2_address_upper_bound = FieldElement::from(CONTRACT_ADDRESS_DOMAIN_SIZE)
         - FieldElement::from(MAX_STORAGE_ITEM_SIZE);
