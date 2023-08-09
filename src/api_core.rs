@@ -13,7 +13,7 @@ use crate::hash::{pedersen_hash_array, StarkFelt, StarkHash};
 use crate::serde_utils::{BytesAsHex, PrefixedBytesAsHex};
 use crate::stdlib::fmt::{self, Debug};
 use crate::stdlib::mem;
-use crate::stdlib::string::String;
+use crate::stdlib::string::{String, ToString};
 use crate::transaction::{Calldata, ContractAddressSalt};
 use crate::{impl_from_through_intermediate, StarknetApiError};
 
