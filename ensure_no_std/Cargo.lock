@@ -124,8 +124,8 @@ checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
 
 [[package]]
 name = "cairo-felt"
-version = "0.6.0"
-source = "git+https://github.com/keep-starknet-strange/cairo-rs?branch=no_std-support-with-cairo-1#3f406f4a335fd3a0bf22237e493be5a9947efa7d"
+version = "0.8.5"
+source = "git+https://github.com/apoorvsadana/cairo-rs?branch=no_std-support-08-aug-23#79854a13ad382220f42e07db83ccc9170389ba31"
 dependencies = [
  "lazy_static",
  "num-bigint",
@@ -136,8 +136,8 @@ dependencies = [
 
 [[package]]
 name = "cairo-lang-casm"
-version = "2.0.0-rc2"
-source = "git+https://github.com/keep-starknet-strange/cairo?branch=no_std-support#64ef5864c5b92ee40b46ecb0b6fd854bd790938d"
+version = "2.1.0"
+source = "git+https://github.com/apoorvsadana/cairo?branch=no_std-support-08-aug-23#73286dd1e2a563ddf9ad8c2d7a5e15fb88cc7e24"
 dependencies = [
  "cairo-lang-utils",
  "hashbrown 0.14.0",
@@ -151,23 +151,25 @@ dependencies = [
 
 [[package]]
 name = "cairo-lang-casm-contract-class"
-version = "2.0.0-rc2"
-source = "git+https://github.com/keep-starknet-strange/cairo?branch=no_std-support#64ef5864c5b92ee40b46ecb0b6fd854bd790938d"
+version = "2.1.0"
+source = "git+https://github.com/apoorvsadana/cairo?branch=no_std-support-08-aug-23#73286dd1e2a563ddf9ad8c2d7a5e15fb88cc7e24"
 dependencies = [
  "cairo-lang-casm",
  "cairo-lang-utils",
+ "itertools",
  "num-bigint",
  "serde",
+ "thiserror-no-std",
 ]
 
 [[package]]
 name = "cairo-lang-utils"
-version = "2.0.0-rc2"
-source = "git+https://github.com/keep-starknet-strange/cairo?branch=no_std-support#64ef5864c5b92ee40b46ecb0b6fd854bd790938d"
+version = "2.1.0"
+source = "git+https://github.com/apoorvsadana/cairo?branch=no_std-support-08-aug-23#73286dd1e2a563ddf9ad8c2d7a5e15fb88cc7e24"
 dependencies = [
  "cairo-felt",
  "hashbrown 0.14.0",
- "indexmap 2.0.0",
+ "indexmap 2.0.0-pre",
  "itertools",
  "num-bigint",
  "num-integer",
@@ -314,10 +316,6 @@ name = "hashbrown"
 version = "0.13.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "43a3c133739dddd0d2990f9a4bdf8eb4b21ef50e4851ca85ab661199821d510e"
-dependencies = [
- "ahash",
- "serde",
-]
 
 [[package]]
 name = "hashbrown"
@@ -382,7 +380,6 @@ checksum = "d5477fe2230a79769d8dc68e0eabf5437907c0457a5614a9e8dddb67f65eb65d"
 dependencies = [
  "equivalent",
  "hashbrown 0.14.0",
- "serde",
 ]
 
 [[package]]
@@ -494,6 +491,7 @@ dependencies = [
  "arrayvec",
  "byte-slice-cast",
  "impl-trait-for-tuples",
+ "parity-scale-codec-derive",
 ]
 
 [[package]]
@@ -721,10 +719,11 @@ version = "0.4.1"
 dependencies = [
  "cairo-lang-casm-contract-class",
  "derive_more",
- "hashbrown 0.13.2",
+ "hashbrown 0.14.0",
  "hex",
  "indexmap 2.0.0-pre",
  "once_cell",
+ "parity-scale-codec",
  "primitive-types",
  "serde",
  "serde_json",
