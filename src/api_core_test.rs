@@ -1,13 +1,14 @@
 use assert_matches::assert_matches;
 use starknet_crypto::FieldElement;
 
-use crate::core::{
-    calculate_contract_address, ClassHash, ContractAddress, PatriciaKey, StarknetApiError,
-    CONTRACT_ADDRESS_PREFIX, L2_ADDRESS_UPPER_BOUND,
+use super::{CONTRACT_ADDRESS_DOMAIN_SIZE, MAX_STORAGE_ITEM_SIZE};
+use crate::api_core::{
+    calculate_contract_address, ClassHash, ContractAddress, EthAddress, PatriciaKey,
+    StarknetApiError, CONTRACT_ADDRESS_PREFIX, L2_ADDRESS_UPPER_BOUND,
 };
 use crate::hash::{pedersen_hash_array, StarkFelt, StarkHash};
 use crate::transaction::{Calldata, ContractAddressSalt};
-use crate::{patricia_key, stark_felt};
+use crate::{class_hash, patricia_key, stark_felt};
 
 #[test]
 fn patricia_key_valid() {
@@ -42,7 +43,7 @@ fn patricia_key_macro() {
 #[test]
 fn test_calculate_contract_address() {
     let salt = ContractAddressSalt(stark_felt!(1337_u16));
-    let class_hash = ClassHash(stark_felt!("0x110"));
+    let class_hash = class_hash!("0x110");
     let deployer_address = ContractAddress::default();
     let constructor_calldata =
         Calldata(vec![stark_felt!(60_u16), stark_felt!(70_u16), FieldElement::MAX.into()].into());
@@ -60,8 +61,25 @@ fn test_calculate_contract_address() {
         class_hash.0,
         constructor_calldata_hash,
     ]);
-    let mod_address = FieldElement::from(address) % *L2_ADDRESS_UPPER_BOUND;
+    let mod_address = FieldElement::from(address) % L2_ADDRESS_UPPER_BOUND;
     let expected_address = ContractAddress::try_from(StarkFelt::from(mod_address)).unwrap();
 
     assert_eq!(actual_address, expected_address);
+}
+
+#[test]
+fn eth_address_serde() {
+    let eth_address = EthAddress::try_from(StarkFelt::try_from("0x001").unwrap()).unwrap();
+    let serialized = serde_json::to_string(&eth_address).unwrap();
+    assert_eq!(serialized, r#""0x1""#);
+
+    let restored = serde_json::from_str::<EthAddress>(&serialized).unwrap();
+    assert_eq!(restored, eth_address);
+}
+
+#[test]
+fn l2_address_upper_bound_has_correct_value() {
+    let expected_l2_address_upper_bound = FieldElement::from(CONTRACT_ADDRESS_DOMAIN_SIZE)
+        - FieldElement::from(MAX_STORAGE_ITEM_SIZE);
+    assert_eq!(expected_l2_address_upper_bound, L2_ADDRESS_UPPER_BOUND);
 }

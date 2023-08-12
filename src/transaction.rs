@@ -1,16 +1,16 @@
-use std::fmt::Display;
-use std::sync::Arc;
-
 use derive_more::From;
-use primitive_types::H160;
 use serde::{Deserialize, Serialize};
 
+use crate::api_core::{
+    ClassHash, CompiledClassHash, ContractAddress, EntryPointSelector, EthAddress, Nonce,
+};
 use crate::block::{BlockHash, BlockNumber};
-use crate::core::{ClassHash, CompiledClassHash, ContractAddress, EntryPointSelector, Nonce};
 use crate::hash::{StarkFelt, StarkHash};
 use crate::serde_utils::PrefixedBytesAsHex;
-use crate::StarknetApiError;
-
+use crate::stdlib::fmt;
+use crate::stdlib::fmt::Display;
+use crate::stdlib::sync::Arc;
+use crate::stdlib::vec::Vec;
 /// A transaction.
 #[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
 pub enum Transaction {
@@ -24,18 +24,6 @@ pub enum Transaction {
     Invoke(InvokeTransaction),
     /// An L1 handler transaction.
     L1Handler(L1HandlerTransaction),
-}
-
-impl Transaction {
-    pub fn transaction_hash(&self) -> TransactionHash {
-        match self {
-            Transaction::Declare(tx) => tx.transaction_hash(),
-            Transaction::Deploy(tx) => tx.transaction_hash,
-            Transaction::DeployAccount(tx) => tx.transaction_hash,
-            Transaction::Invoke(tx) => tx.transaction_hash(),
-            Transaction::L1Handler(tx) => tx.transaction_hash,
-        }
-    }
 }
 
 /// A transaction output.
@@ -78,7 +66,6 @@ impl TransactionOutput {
 /// A declare V0 or V1 transaction (same schema but different version).
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
 pub struct DeclareTransactionV0V1 {
-    pub transaction_hash: TransactionHash,
     pub max_fee: Fee,
     pub signature: TransactionSignature,
     pub nonce: Nonce,
@@ -89,7 +76,6 @@ pub struct DeclareTransactionV0V1 {
 /// A declare V2 transaction.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
 pub struct DeclareTransactionV2 {
-    pub transaction_hash: TransactionHash,
     pub max_fee: Fee,
     pub signature: TransactionSignature,
     pub nonce: Nonce,
@@ -119,7 +105,6 @@ macro_rules! implement_declare_tx_getters {
 
 impl DeclareTransaction {
     implement_declare_tx_getters!(
-        (transaction_hash, TransactionHash),
         (class_hash, ClassHash),
         (nonce, Nonce),
         (sender_address, ContractAddress),
@@ -139,13 +124,11 @@ impl DeclareTransaction {
 /// A deploy account transaction.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
 pub struct DeployAccountTransaction {
-    pub transaction_hash: TransactionHash,
     pub max_fee: Fee,
     pub version: TransactionVersion,
     pub signature: TransactionSignature,
     pub nonce: Nonce,
     pub class_hash: ClassHash,
-    pub contract_address: ContractAddress,
     pub contract_address_salt: ContractAddressSalt,
     pub constructor_calldata: Calldata,
 }
@@ -153,10 +136,8 @@ pub struct DeployAccountTransaction {
 /// A deploy transaction.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
 pub struct DeployTransaction {
-    pub transaction_hash: TransactionHash,
     pub version: TransactionVersion,
     pub class_hash: ClassHash,
-    pub contract_address: ContractAddress,
     pub contract_address_salt: ContractAddressSalt,
     pub constructor_calldata: Calldata,
 }
@@ -164,11 +145,9 @@ pub struct DeployTransaction {
 /// An invoke V0 transaction.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
 pub struct InvokeTransactionV0 {
-    pub transaction_hash: TransactionHash,
     pub max_fee: Fee,
     pub signature: TransactionSignature,
-    pub nonce: Nonce,
-    pub sender_address: ContractAddress,
+    pub contract_address: ContractAddress,
     pub entry_point_selector: EntryPointSelector,
     pub calldata: Calldata,
 }
@@ -176,7 +155,6 @@ pub struct InvokeTransactionV0 {
 /// An invoke V1 transaction.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
 pub struct InvokeTransactionV1 {
-    pub transaction_hash: TransactionHash,
     pub max_fee: Fee,
     pub signature: TransactionSignature,
     pub nonce: Nonce,
@@ -203,11 +181,8 @@ macro_rules! implement_invoke_tx_getters {
 
 impl InvokeTransaction {
     implement_invoke_tx_getters!(
-        (transaction_hash, TransactionHash),
         (max_fee, Fee),
         (signature, TransactionSignature),
-        (nonce, Nonce),
-        (sender_address, ContractAddress),
         (calldata, Calldata)
     );
 }
@@ -215,7 +190,6 @@ impl InvokeTransaction {
 /// An L1 handler transaction.
 #[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
 pub struct L1HandlerTransaction {
-    pub transaction_hash: TransactionHash,
     pub version: TransactionVersion,
     pub nonce: Nonce,
     pub contract_address: ContractAddress,
@@ -229,6 +203,7 @@ pub struct DeclareTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
     pub events: Vec<Event>,
+    pub execution_status: TransactionExecutionStatus,
 }
 
 /// A deploy-account transaction output.
@@ -237,6 +212,8 @@ pub struct DeployAccountTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
     pub events: Vec<Event>,
+    pub contract_address: ContractAddress,
+    pub execution_status: TransactionExecutionStatus,
 }
 
 /// A deploy transaction output.
@@ -245,6 +222,8 @@ pub struct DeployTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
     pub events: Vec<Event>,
+    pub contract_address: ContractAddress,
+    pub execution_status: TransactionExecutionStatus,
 }
 
 /// An invoke transaction output.
@@ -253,6 +232,7 @@ pub struct InvokeTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
     pub events: Vec<Event>,
+    pub execution_status: TransactionExecutionStatus,
 }
 
 /// An L1 handler transaction output.
@@ -261,6 +241,7 @@ pub struct L1HandlerTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
     pub events: Vec<Event>,
+    pub execution_status: TransactionExecutionStatus,
 }
 
 /// A transaction receipt.
@@ -271,6 +252,18 @@ pub struct TransactionReceipt {
     pub block_number: BlockNumber,
     #[serde(flatten)]
     pub output: TransactionOutput,
+}
+
+/// Transaction execution status.
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, Default)]
+pub enum TransactionExecutionStatus {
+    #[serde(rename = "SUCCEEDED")]
+    #[default]
+    // Succeeded is the default variant because old versions of Starknet don't have an execution
+    // status and every transaction is considered succeeded
+    Succeeded,
+    #[serde(rename = "REVERTED")]
+    Reverted,
 }
 
 /// A fee.
@@ -305,7 +298,7 @@ impl From<Fee> for StarkFelt {
 pub struct TransactionHash(pub StarkHash);
 
 impl Display for TransactionHash {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.0)
     }
 }
@@ -350,26 +343,6 @@ pub struct MessageToL1 {
     pub from_address: ContractAddress,
     pub to_address: EthAddress,
     pub payload: L2ToL1Payload,
-}
-
-/// An Ethereum address.
-#[derive(
-    Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
-)]
-pub struct EthAddress(pub H160);
-
-impl TryFrom<StarkFelt> for EthAddress {
-    type Error = StarknetApiError;
-    fn try_from(felt: StarkFelt) -> Result<Self, Self::Error> {
-        const COMPLIMENT_OF_H160: usize = std::mem::size_of::<StarkFelt>() - H160::len_bytes();
-
-        let (rest, h160_bytes) = felt.bytes().split_at(COMPLIMENT_OF_H160);
-        if rest != [0u8; COMPLIMENT_OF_H160] {
-            return Err(StarknetApiError::OutOfRange { string: felt.to_string() });
-        }
-
-        Ok(EthAddress(H160::from_slice(h160_bytes)))
-    }
 }
 
 /// The payload of [`MessageToL2`].
