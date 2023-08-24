@@ -1,10 +1,9 @@
 use derive_more::From;
-use primitive_types::H160;
 use serde::{Deserialize, Serialize};
 
-#[cfg(not(feature = "std"))]
-use crate::alloc::string::ToString;
-use crate::api_core::{ClassHash, CompiledClassHash, ContractAddress, EntryPointSelector, Nonce};
+use crate::api_core::{
+    ClassHash, CompiledClassHash, ContractAddress, EntryPointSelector, EthAddress, Nonce,
+};
 use crate::block::{BlockHash, BlockNumber};
 use crate::hash::{StarkFelt, StarkHash};
 use crate::serde_utils::PrefixedBytesAsHex;
@@ -12,7 +11,6 @@ use crate::stdlib::fmt;
 use crate::stdlib::fmt::Display;
 use crate::stdlib::sync::Arc;
 use crate::stdlib::vec::Vec;
-use crate::StarknetApiError;
 
 /// A transaction.
 #[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
@@ -426,31 +424,6 @@ pub struct MessageToL1 {
     pub from_address: ContractAddress,
     pub to_address: EthAddress,
     pub payload: L2ToL1Payload,
-}
-
-/// An Ethereum address.
-#[derive(
-    Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
-)]
-#[cfg_attr(
-    feature = "parity-scale-codec",
-    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
-)]
-#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
-pub struct EthAddress(pub H160);
-
-impl TryFrom<StarkFelt> for EthAddress {
-    type Error = StarknetApiError;
-    fn try_from(felt: StarkFelt) -> Result<Self, Self::Error> {
-        const COMPLIMENT_OF_H160: usize = core::mem::size_of::<StarkFelt>() - H160::len_bytes();
-
-        let (rest, h160_bytes) = felt.bytes().split_at(COMPLIMENT_OF_H160);
-        if rest != [0u8; COMPLIMENT_OF_H160] {
-            return Err(StarknetApiError::OutOfRange { string: felt.to_string() });
-        }
-
-        Ok(EthAddress(H160::from_slice(h160_bytes)))
-    }
 }
 
 /// The payload of [`MessageToL2`].
