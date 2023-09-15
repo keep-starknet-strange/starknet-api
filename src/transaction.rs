@@ -14,6 +14,11 @@ use crate::stdlib::vec::Vec;
 
 /// A transaction.
 #[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum Transaction {
     /// A declare transaction.
     Declare(DeclareTransaction),
