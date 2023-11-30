@@ -9,7 +9,13 @@ description = "Starknet Rust types related to computation and execution."
 
 [features]
 default = ["std"]
-std = ["serde_json/std", "hex/std", "primitive-types/std", "parity-scale-codec?/std", "scale-info?/std"]
+std = [
+  "serde_json/std",
+  "hex/std",
+  "primitive-types/std",
+  "parity-scale-codec?/std",
+  "scale-info?/std",
+]
 parity-scale-codec = ["dep:parity-scale-codec", "primitive-types/codec"]
 scale-info = ["dep:scale-info", "primitive-types/scale-info"]
 testing = []
@@ -19,29 +25,29 @@ once_cell = { version = "1.17.1", default-features = false }
 thiserror-no-std = { version = "2.0.2", default-features = false }
 cairo-lang-casm-contract-class = { git = "https://github.com/keep-starknet-strange/cairo", branch = "no_std-support-8bbf530", default-features = false }
 primitive-types = { version = "0.12.1", default-features = false, features = [
-    "serde_no_std",
+  "serde_no_std",
 ] }
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 indexmap = { git = "https://github.com/bluss/indexmap", rev = "ca5f848e10c31e80aeaad0720d14aa2f6dd6cfb1", features = [
-    "serde",
+  "serde",
 ], default-features = false }
 serde = { version = "1.0.130", features = [
-    "derive",
-    "rc",
+  "derive",
+  "rc",
 ], default-features = false }
 serde_json = { version = "1.0.81", default-features = false, features = [
-    "alloc",
+  "alloc",
 ] }
-starknet-crypto = { version = "0.5.1", default-features = false }
+starknet-crypto = { git = "https://github.com/xJonathanLEI/starknet-rs.git", rev = "a35ce22", default-features = false }
 derive_more = { version = "0.99.17", default-features = false, features = [
-    "display",
-    "from",
+  "display",
+  "from",
 ] }
 hashbrown = { version = "0.14.0", features = ["serde"] }
 
 # Optional dependencies
 parity-scale-codec = { version = "3.6.0", default-features = false, features = [
-    "derive",
+  "derive",
 ], optional = true }
 scale-info = { version = "2.9.0", default-features = false, optional = true }
 
