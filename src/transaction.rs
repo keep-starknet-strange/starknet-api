@@ -429,6 +429,17 @@ pub struct MessageToL1 {
     pub from_address: ContractAddress,
     pub to_address: EthAddress,
     pub payload: L2ToL1Payload,
+}
+
+/// An ordered message.
+#[derive(Debug, Default, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
+pub struct OrderedMessageToL1 {
+    pub data: MessageToL1,
     /// The order of the message within the transaction
     pub order: u64,
 }
@@ -469,6 +480,17 @@ pub struct Event {
 pub struct EventContent {
     pub keys: Vec<EventKey>,
     pub data: EventData,
+}
+
+/// An ordered event.
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
+pub struct OrderedEvent {
+    pub content: EventContent,
     /// The order of the event within the transaction
     pub order: u64,
 }
