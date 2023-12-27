@@ -429,6 +429,8 @@ pub struct MessageToL1 {
     pub from_address: ContractAddress,
     pub to_address: EthAddress,
     pub payload: L2ToL1Payload,
+    /// The order of the message within the transaction
+    pub order: u64,
 }
 
 /// The payload of [`MessageToL2`].
@@ -467,6 +469,8 @@ pub struct Event {
 pub struct EventContent {
     pub keys: Vec<EventKey>,
     pub data: EventData,
+    /// The order of the event within the transaction
+    pub order: u64,
 }
 
 /// An event key.
