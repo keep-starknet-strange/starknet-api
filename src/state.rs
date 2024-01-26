@@ -17,7 +17,6 @@ use crate::api_core::{
 use crate::block::{BlockHash, BlockNumber};
 use crate::deprecated_contract_class::ContractClass as DeprecatedContractClass;
 use crate::hash::{StarkFelt, StarkHash};
-use crate::stdlib::collections::HashMap;
 use crate::stdlib::fmt::Debug;
 use crate::stdlib::string::String;
 use crate::stdlib::vec::Vec;
@@ -164,12 +163,87 @@ impl_from_through_intermediate!(u128, StorageKey, u8, u16, u32, u64);
 #[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
 pub struct ContractClass {
     pub sierra_program: Vec<StarkFelt>,
-    pub entry_point_by_type: HashMap<EntryPointType, Vec<EntryPoint>>,
+    pub entry_point_by_type: IndexMap<EntryPointType, Vec<EntryPoint>, HasherBuilder>,
     pub abi: String,
+}
+
+#[cfg(feature = "parity-scale-codec")]
+impl parity_scale_codec::Encode for ContractClass {
+    fn size_hint(&self) -> usize {
+        self.sierra_program.size_hint()
+            + 1
+            + self.entry_point_by_type.len() * core::mem::size_of::<EntryPointType>()
+            + self.abi.size_hint()
+    }
+
+    fn encode_to<T: parity_scale_codec::Output + ?Sized>(&self, dest: &mut T) {
+        self.sierra_program.encode_to(dest);
+        parity_scale_codec::Compact(self.entry_point_by_type.len() as u32).encode_to(dest);
+        self.entry_point_by_type.iter().for_each(|v| v.encode_to(dest));
+        self.abi.encode_to(dest);
+    }
+}
+
+#[cfg(feature = "parity-scale-codec")]
+impl parity_scale_codec::Decode for ContractClass {
+    fn decode<I: parity_scale_codec::Input>(
+        input: &mut I,
+    ) -> Result<Self, parity_scale_codec::Error> {
+        let data =
+            <(Vec<StarkFelt>, Vec<(EntryPointType, Vec<EntryPoint>)>, String)>::decode(input)?;
+
+        Ok(ContractClass {
+            sierra_program: data.0,
+            entry_point_by_type: data.1.into_iter().collect(),
+            abi: data.2,
+        })
+    }
+}
+
+#[cfg(all(test, feature = "parity-scale-codec"))]
+mod contract_class_scale_test {
+    use parity_scale_codec::{Decode, Encode};
+
+    use super::*;
+
+    #[test]
+    fn encode_decode_work() {
+        let sierra_program =
+            vec![StarkFelt::from(0u128), StarkFelt::from(1u128), StarkFelt::from(u128::MAX)];
+        let abi = String::from("Some string");
+        let entry_point_by_type =
+            IndexMap::<EntryPointType, Vec<EntryPoint>, HasherBuilder>::from_iter(vec![
+                (
+                    EntryPointType::Constructor,
+                    vec![EntryPoint {
+                        function_idx: FunctionIndex(100),
+                        selector: EntryPointSelector(StarkFelt::from(9u128)),
+                    }],
+                ),
+                (
+                    EntryPointType::External,
+                    vec![EntryPoint {
+                        function_idx: FunctionIndex(12),
+                        selector: EntryPointSelector(StarkFelt::from(66u128)),
+                    }],
+                ),
+            ]);
+
+        let contract_class = ContractClass { sierra_program, entry_point_by_type, abi };
+
+        let encoded = contract_class.encode();
+        let decoded = ContractClass::decode(&mut &encoded[..]).unwrap();
+
+        assert_eq!(contract_class, decoded);
+    }
 }
 
 #[derive(
     Debug, Default, Clone, Copy, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 #[serde(deny_unknown_fields)]
 pub enum EntryPointType {
@@ -187,6 +261,10 @@ pub enum EntryPointType {
 
 /// An entry point of a [ContractClass](`crate::state::ContractClass`).
 #[derive(Debug, Default, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub struct EntryPoint {
     pub function_idx: FunctionIndex,
     pub selector: EntryPointSelector,
@@ -195,4 +273,8 @@ pub struct EntryPoint {
 #[derive(
     Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
-pub struct FunctionIndex(pub usize);
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+pub struct FunctionIndex(pub u64);
