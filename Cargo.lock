@@ -787,7 +787,6 @@ dependencies = [
  "serde",
  "serde_json",
  "starknet-crypto",
- "thiserror-no-std",
 ]
 
 [[package]]
