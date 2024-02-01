@@ -83,8 +83,6 @@ impl parity_scale_codec::Encode for ThinStateDiff {
     fn encode_to<T: parity_scale_codec::Output + ?Sized>(&self, dest: &mut T) {
         parity_scale_codec::Compact(self.deployed_contracts.len() as u64).encode_to(dest);
         self.deployed_contracts.iter().for_each(|v| v.encode_to(dest));
-        parity_scale_codec::Compact(self.nonces.len() as u64).encode_to(dest);
-        self.nonces.iter().for_each(|v| v.encode_to(dest));
         parity_scale_codec::Compact(self.storage_diffs.len() as u64).encode_to(dest);
         self.storage_diffs.iter().for_each(|(address, idx_map)| {
             address.encode_to(dest);
@@ -95,6 +93,8 @@ impl parity_scale_codec::Encode for ThinStateDiff {
         self.declared_classes.iter().for_each(|v| v.encode_to(dest));
         parity_scale_codec::Compact(self.deprecated_declared_classes.len() as u64).encode_to(dest);
         self.deprecated_declared_classes.iter().for_each(|v| v.encode_to(dest));
+        parity_scale_codec::Compact(self.nonces.len() as u64).encode_to(dest);
+        self.nonces.iter().for_each(|v| v.encode_to(dest));
         parity_scale_codec::Compact(self.replaced_classes.len() as u64).encode_to(dest);
         self.replaced_classes.iter().for_each(|v| v.encode_to(dest));
     }
@@ -126,6 +126,64 @@ impl parity_scale_codec::Decode for ThinStateDiff {
             nonces: res.4.into_iter().collect(),
             replaced_classes: res.5.into_iter().collect(),
         })
+    }
+}
+
+#[cfg(all(test, not(feature = "std"), feature = "parity-scale-codec"))]
+mod tests {
+    use parity_scale_codec::{Decode, Encode};
+
+    use super::*;
+
+    #[test]
+    fn encode_decode_works() {
+        let mut deployed_contracts = IndexMap::default();
+        deployed_contracts.insert(ContractAddress::from(1_u32), ClassHash::default());
+        deployed_contracts.insert(ContractAddress::from(3_u32), ClassHash::default());
+
+        let mut declared_classes = IndexMap::default();
+        declared_classes.insert(ClassHash::default(), CompiledClassHash::default());
+        declared_classes.insert(ClassHash::default(), CompiledClassHash::default());
+
+        let mut storage_diffs = IndexMap::default();
+        let mut storage_updates_1 = IndexMap::default();
+        storage_updates_1.insert(StorageKey::from(9_u32), StarkFelt::from(1_u32));
+        storage_updates_1.insert(StorageKey::from(11_u32), StarkFelt::from(12_u32));
+        storage_diffs.insert(ContractAddress::from(13_u32), storage_updates_1);
+        let mut storage_updates_2 = IndexMap::default();
+        storage_updates_2.insert(StorageKey::from(14_u32), StarkFelt::from(15_u32));
+        storage_updates_2.insert(StorageKey::from(16_u32), StarkFelt::from(17_u32));
+        storage_diffs.insert(ContractAddress::from(18_u32), storage_updates_2);
+
+        let mut nonces = IndexMap::default();
+        nonces.insert(ContractAddress::from(5_u32), Nonce::default());
+        nonces.insert(ContractAddress::from(7_u32), Nonce::default());
+
+        let mut replaced_classes = IndexMap::default();
+        replaced_classes.insert(ContractAddress::from(19_u32), ClassHash::default());
+        replaced_classes.insert(ContractAddress::from(21_u32), ClassHash::default());
+
+        let mut deprecated_declared_classes = Vec::new();
+        deprecated_declared_classes.push(ClassHash::default());
+
+        let state_diff = ThinStateDiff {
+            deployed_contracts,
+            storage_diffs,
+            declared_classes,
+            deprecated_declared_classes,
+            nonces,
+            replaced_classes,
+        };
+
+        let encoded = state_diff.encode();
+        #[cfg(feature = "std")]
+        println!("Encoded: {:?}", encoded);
+
+        let decoded = ThinStateDiff::decode(&mut &encoded[..]).unwrap();
+        #[cfg(feature = "std")]
+        println!("Decoded: {:?}", decoded);
+
+        assert_eq!(state_diff, decoded);
     }
 }
 
