@@ -6,6 +6,7 @@ use std::fmt::Debug;
 
 use derive_more::Display;
 use once_cell::sync::Lazy;
+use parity_scale_codec::{Decode, Encode};
 use primitive_types::H160;
 use serde::{Deserialize, Serialize};
 use starknet_crypto::FieldElement;
@@ -17,7 +18,20 @@ use crate::transaction::{Calldata, ContractAddressSalt};
 use crate::{impl_from_through_intermediate, StarknetApiError};
 
 /// A chain id.
-#[derive(Clone, Debug, Display, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Clone,
+    Debug,
+    Display,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct ChainId(pub String);
 
 impl ChainId {
@@ -46,6 +60,8 @@ pub const BLOCK_HASH_TABLE_ADDRESS: ContractAddress = ContractAddress(PatriciaKe
     PartialOrd,
     Ord,
     derive_more::Deref,
+    Encode,
+    Decode,
 )]
 pub struct ContractAddress(pub PatriciaKey);
 
@@ -120,6 +136,8 @@ pub fn calculate_contract_address(
     Ord,
     Display,
     derive_more::Deref,
+    Encode,
+    Decode,
 )]
 pub struct ClassHash(pub StarkHash);
 
@@ -137,6 +155,8 @@ pub struct ClassHash(pub StarkHash);
     PartialOrd,
     Ord,
     Display,
+    Encode,
+    Decode,
 )]
 pub struct CompiledClassHash(pub StarkHash);
 
@@ -154,6 +174,8 @@ pub struct CompiledClassHash(pub StarkHash);
     PartialOrd,
     Ord,
     derive_more::Deref,
+    Encode,
+    Decode,
 )]
 pub struct Nonce(pub StarkFelt);
 
@@ -171,7 +193,19 @@ impl Nonce {
 
 /// The selector of an [EntryPoint](`crate::deprecated_contract_class::EntryPoint`).
 #[derive(
-    Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Copy,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
 pub struct EntryPointSelector(pub StarkHash);
 
@@ -190,6 +224,8 @@ pub struct EntryPointSelector(pub StarkHash);
     PartialOrd,
     Ord,
     Display,
+    Encode,
+    Decode,
 )]
 pub struct GlobalRoot(pub StarkHash);
 
@@ -207,6 +243,8 @@ pub struct GlobalRoot(pub StarkHash);
     PartialOrd,
     Ord,
     Display,
+    Encode,
+    Decode,
 )]
 pub struct TransactionCommitment(pub StarkHash);
 
@@ -224,6 +262,8 @@ pub struct TransactionCommitment(pub StarkHash);
     PartialOrd,
     Ord,
     Display,
+    Encode,
+    Decode,
 )]
 pub struct EventCommitment(pub StarkHash);
 
@@ -241,6 +281,8 @@ pub struct EventCommitment(pub StarkHash);
     PartialOrd,
     Ord,
     derive_more:: Deref,
+    Encode,
+    Decode,
 )]
 pub struct PatriciaKey(StarkHash);
 
@@ -309,7 +351,19 @@ macro_rules! contract_address {
 
 /// An Ethereum address.
 #[derive(
-    Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Copy,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
 #[serde(try_from = "PrefixedBytesAsHex<20_usize>", into = "PrefixedBytesAsHex<20_usize>")]
 pub struct EthAddress(pub H160);
@@ -352,11 +406,35 @@ impl From<EthAddress> for PrefixedBytesAsHex<20_usize> {
 
 /// A public key of a sequencer.
 #[derive(
-    Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Copy,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
 pub struct SequencerPublicKey(pub PublicKey);
 
 #[derive(
-    Debug, Default, Clone, Copy, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Default,
+    Clone,
+    Copy,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
 pub struct SequencerContractAddress(pub ContractAddress);

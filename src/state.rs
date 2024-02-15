@@ -1,11 +1,10 @@
 #[cfg(test)]
 #[path = "state_test.rs"]
 mod state_test;
-
-use std::collections::HashMap;
 use std::fmt::Debug;
 
 use indexmap::IndexMap;
+use parity_scale_codec::{Decode, Encode};
 use serde::{Deserialize, Serialize};
 
 use crate::block::{BlockHash, BlockNumber};
@@ -22,7 +21,18 @@ pub type DeprecatedDeclaredClasses = IndexMap<ClassHash, DeprecatedContractClass
 
 /// The differences between two states before and after a block with hash block_hash
 /// and their respective roots.
-#[derive(Debug, Default, Clone, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Default,
+    Clone,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    // TODO
+    // Encode, 
+    // Decode 
+)]
 pub struct StateUpdate {
     pub block_hash: BlockHash,
     pub new_root: GlobalRoot,
@@ -34,7 +44,18 @@ pub struct StateUpdate {
 // Invariant: Addresses are strictly increasing.
 // Invariant: Class hashes of declared_classes and deprecated_declared_classes are exclusive.
 // TODO(yair): Enforce this invariant.
-#[derive(Debug, Default, Clone, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Default,
+    Clone,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    // TODO
+    // Encode, 
+    // Decode 
+)]
 pub struct StateDiff {
     pub deployed_contracts: IndexMap<ContractAddress, ClassHash>,
     pub storage_diffs: IndexMap<ContractAddress, IndexMap<StorageKey, StarkFelt>>,
@@ -47,7 +68,17 @@ pub struct StateDiff {
 // Invariant: Addresses are strictly increasing.
 // The invariant is enforced as [`ThinStateDiff`] is created only from [`starknet_api`][`StateDiff`]
 // where the addresses are strictly increasing.
-#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    // TODO
+    // Encode, 
+    // Decode 
+)]
 pub struct ThinStateDiff {
     pub deployed_contracts: IndexMap<ContractAddress, ClassHash>,
     pub storage_diffs: IndexMap<ContractAddress, IndexMap<StorageKey, StarkFelt>>,
@@ -97,7 +128,19 @@ impl From<StateDiff> for ThinStateDiff {
 // States: S0       S1       S2
 // Blocks      B0->     B1->
 #[derive(
-    Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Default,
+    Copy,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
 pub struct StateNumber(pub BlockNumber);
 
@@ -139,6 +182,8 @@ impl StateNumber {
     PartialOrd,
     Ord,
     derive_more::Deref,
+    Encode,
+    Decode,
 )]
 pub struct StorageKey(pub PatriciaKey);
 
@@ -165,15 +210,38 @@ impl From<u128> for StorageKey {
 impl_from_through_intermediate!(u128, StorageKey, u8, u16, u32, u64);
 
 /// A contract class.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    // TODO
+    // Encode, 
+    // Decode 
+)]
 pub struct ContractClass {
     pub sierra_program: Vec<StarkFelt>,
-    pub entry_points_by_type: HashMap<EntryPointType, Vec<EntryPoint>>,
+    pub entry_points_by_type: IndexMap<EntryPointType, Vec<EntryPoint>>,
     pub abi: String,
 }
 
 #[derive(
-    Debug, Default, Clone, Copy, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Default,
+    Clone,
+    Copy,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
 #[serde(deny_unknown_fields)]
 pub enum EntryPointType {
@@ -190,13 +258,38 @@ pub enum EntryPointType {
 }
 
 /// An entry point of a [ContractClass](`crate::state::ContractClass`).
-#[derive(Debug, Default, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Default,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode, 
+)]
 pub struct EntryPoint {
     pub function_idx: FunctionIndex,
     pub selector: EntryPointSelector,
 }
 
 #[derive(
-    Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Copy,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode
 )]
-pub struct FunctionIndex(pub usize);
+pub struct FunctionIndex(pub u64);

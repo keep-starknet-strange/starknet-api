@@ -5,6 +5,7 @@ mod hash_test;
 use std::fmt::{Debug, Display};
 use std::io::Error;
 
+use parity_scale_codec::{Decode, Encode};
 use serde::{Deserialize, Serialize};
 use starknet_crypto::{
     pedersen_hash as starknet_crypto_pedersen_hash, poseidon_hash_many, FieldElement,
@@ -44,6 +45,7 @@ pub fn pedersen_hash_array(felts: &[StarkFelt]) -> StarkHash {
 }
 
 /// A Poseidon hash.
+#[derive(Encode, Decode)]
 pub struct PoseidonHash(pub StarkFelt);
 
 /// Computes Poseidon hash.
@@ -55,7 +57,20 @@ pub fn poseidon_hash_array(felts: &[StarkFelt]) -> PoseidonHash {
 
 // TODO: Move to a different crate.
 /// The StarkNet [field element](https://docs.starknet.io/documentation/architecture_and_concepts/Hashing/hash-functions/#domain_and_range).
-#[derive(Copy, Clone, Eq, PartialEq, Default, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Copy,
+    Clone,
+    Eq,
+    PartialEq,
+    Default,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 #[serde(try_from = "PrefixedBytesAsHex<32_usize>", into = "PrefixedBytesAsHex<32_usize>")]
 pub struct StarkFelt([u8; 32]);
 
@@ -223,25 +238,6 @@ impl From<StarkFelt> for FieldElement {
 impl From<StarkFelt> for PrefixedBytesAsHex<32_usize> {
     fn from(felt: StarkFelt) -> Self {
         BytesAsHex(felt.0)
-    }
-}
-
-// TODO(Arni, 25/6/2023): Remove impl TryFrom<StarkFelt> for usize. Leave only one conversion from
-//  StarkFelt to integer type.
-impl TryFrom<StarkFelt> for usize {
-    type Error = StarknetApiError;
-    fn try_from(felt: StarkFelt) -> Result<Self, Self::Error> {
-        const COMPLIMENT_OF_USIZE: usize =
-            std::mem::size_of::<StarkFelt>() - std::mem::size_of::<usize>();
-
-        let (rest, usize_bytes) = felt.bytes().split_at(COMPLIMENT_OF_USIZE);
-        if rest != [0u8; COMPLIMENT_OF_USIZE] {
-            return Err(StarknetApiError::OutOfRange { string: felt.to_string() });
-        }
-
-        Ok(usize::from_be_bytes(
-            usize_bytes.try_into().expect("usize_bytes should be of size usize."),
-        ))
     }
 }
 

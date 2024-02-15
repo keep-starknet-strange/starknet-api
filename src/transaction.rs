@@ -1,8 +1,10 @@
-use std::collections::{BTreeMap, HashMap, HashSet};
+use std::collections::BTreeMap;
 use std::fmt::Display;
 use std::sync::Arc;
 
 use derive_more::From;
+use indexmap::{IndexMap, IndexSet};
+use parity_scale_codec::{Decode, Encode};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
@@ -17,7 +19,20 @@ use crate::serde_utils::PrefixedBytesAsHex;
 use crate::StarknetApiError;
 
 /// A transaction.
-#[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    // TODO
+    // Encode, 
+    // Decode, 
+)]
 pub enum Transaction {
     /// A declare transaction.
     Declare(DeclareTransaction),
@@ -32,7 +47,17 @@ pub enum Transaction {
 }
 
 /// A transaction output.
-#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    // TODO
+    // Encode, 
+    // Decode 
+)]
 pub enum TransactionOutput {
     /// A declare transaction output.
     Declare(DeclareTransactionOutput),
@@ -79,7 +104,20 @@ impl TransactionOutput {
 }
 
 /// A declare V0 or V1 transaction (same schema but different version).
-#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct DeclareTransactionV0V1 {
     pub max_fee: Fee,
     pub signature: TransactionSignature,
@@ -89,7 +127,20 @@ pub struct DeclareTransactionV0V1 {
 }
 
 /// A declare V2 transaction.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct DeclareTransactionV2 {
     pub max_fee: Fee,
     pub signature: TransactionSignature,
@@ -100,7 +151,20 @@ pub struct DeclareTransactionV2 {
 }
 
 /// A declare V3 transaction.
-#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone,
+    Debug,
+    Deserialize,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    Serialize, 
+    // TODO
+    // Encode, 
+    // Decode, 
+)]
 pub struct DeclareTransactionV3 {
     pub resource_bounds: ResourceBoundsMapping,
     pub tip: Tip,
@@ -115,7 +179,20 @@ pub struct DeclareTransactionV3 {
     pub account_deployment_data: AccountDeploymentData,
 }
 
-#[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord, 
+    // TODO
+    // Encode, 
+    // Decode
+)]
 pub enum DeclareTransaction {
     V0(DeclareTransactionV0V1),
     V1(DeclareTransactionV0V1),
@@ -155,7 +232,20 @@ impl DeclareTransaction {
 }
 
 /// A deploy account V1 transaction.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct DeployAccountTransactionV1 {
     pub max_fee: Fee,
     pub signature: TransactionSignature,
@@ -166,7 +256,20 @@ pub struct DeployAccountTransactionV1 {
 }
 
 /// A deploy account V3 transaction.
-#[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    // TODO
+    // Encode,
+    // Decode, 
+)]
 pub struct DeployAccountTransactionV3 {
     pub resource_bounds: ResourceBoundsMapping,
     pub tip: Tip,
@@ -180,7 +283,21 @@ pub struct DeployAccountTransactionV3 {
     pub paymaster_data: PaymasterData,
 }
 
-#[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, From)]
+#[derive(
+    Debug,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    From,
+    // TODO
+    // Encode,
+    // Decode,
+)]
 pub enum DeployAccountTransaction {
     V1(DeployAccountTransactionV1),
     V3(DeployAccountTransactionV3),
@@ -216,7 +333,20 @@ impl DeployAccountTransaction {
     }
 }
 /// A deploy transaction.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct DeployTransaction {
     pub version: TransactionVersion,
     pub class_hash: ClassHash,
@@ -225,7 +355,20 @@ pub struct DeployTransaction {
 }
 
 /// An invoke V0 transaction.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct InvokeTransactionV0 {
     pub max_fee: Fee,
     pub signature: TransactionSignature,
@@ -235,7 +378,20 @@ pub struct InvokeTransactionV0 {
 }
 
 /// An invoke V1 transaction.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct InvokeTransactionV1 {
     pub max_fee: Fee,
     pub signature: TransactionSignature,
@@ -245,7 +401,20 @@ pub struct InvokeTransactionV1 {
 }
 
 /// An invoke V3 transaction.
-#[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    // TODO
+    // Encode, 
+    // Decode,
+)]
 pub struct InvokeTransactionV3 {
     pub resource_bounds: ResourceBoundsMapping,
     pub tip: Tip,
@@ -259,7 +428,21 @@ pub struct InvokeTransactionV3 {
     pub account_deployment_data: AccountDeploymentData,
 }
 
-#[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, From)]
+#[derive(
+    Debug,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    From,
+    // TODO
+    // Encode, 
+    // Decode,
+)]
 pub enum InvokeTransaction {
     V0(InvokeTransactionV0),
     V1(InvokeTransactionV1),
@@ -307,7 +490,20 @@ impl InvokeTransaction {
 }
 
 /// An L1 handler transaction.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct L1HandlerTransaction {
     pub version: TransactionVersion,
     pub nonce: Nonce,
@@ -317,7 +513,18 @@ pub struct L1HandlerTransaction {
 }
 
 /// A declare transaction output.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    // TODO
+    // Encode,
+    // Decode
+)]
 pub struct DeclareTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -327,7 +534,18 @@ pub struct DeclareTransactionOutput {
 }
 
 /// A deploy-account transaction output.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    // TODO
+    // Encode,
+    // Decode
+)]
 pub struct DeployAccountTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -338,7 +556,18 @@ pub struct DeployAccountTransactionOutput {
 }
 
 /// A deploy transaction output.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    // TODO
+    // Encode,
+    // Decode
+)]
 pub struct DeployTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -349,7 +578,18 @@ pub struct DeployTransactionOutput {
 }
 
 /// An invoke transaction output.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    // TODO
+    // Encode, 
+    // Decode
+)]
 pub struct InvokeTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -359,7 +599,18 @@ pub struct InvokeTransactionOutput {
 }
 
 /// An L1 handler transaction output.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    // TODO
+    // Encode,
+    // Decode 
+)]
 pub struct L1HandlerTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -369,7 +620,17 @@ pub struct L1HandlerTransactionOutput {
 }
 
 /// A transaction receipt.
-#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    // TODO
+    // Encode, 
+    // Decode
+)]
 pub struct TransactionReceipt {
     pub transaction_hash: TransactionHash,
     pub block_hash: BlockHash,
@@ -379,7 +640,20 @@ pub struct TransactionReceipt {
 }
 
 /// Transaction execution status.
-#[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, Default)]
+#[derive(
+    Debug,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Default,
+    Encode,
+    Decode,
+)]
 pub enum TransactionExecutionStatus {
     #[serde(rename = "SUCCEEDED")]
     #[default]
@@ -404,6 +678,8 @@ pub enum TransactionExecutionStatus {
     PartialOrd,
     Ord,
     derive_more::Deref,
+    Encode,
+    Decode,
 )]
 #[serde(from = "PrefixedBytesAsHex<16_usize>", into = "PrefixedBytesAsHex<16_usize>")]
 pub struct Fee(pub u128);
@@ -440,6 +716,8 @@ impl From<Fee> for StarkFelt {
     PartialOrd,
     Ord,
     derive_more::Deref,
+    Encode,
+    Decode,
 )]
 pub struct TransactionHash(pub StarkHash);
 
@@ -451,12 +729,37 @@ impl Display for TransactionHash {
 
 /// A contract address salt.
 #[derive(
-    Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Copy,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
 pub struct ContractAddressSalt(pub StarkHash);
 
 /// A transaction signature.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct TransactionSignature(pub Vec<StarkFelt>);
 
 /// A transaction version.
@@ -473,6 +776,8 @@ pub struct TransactionSignature(pub Vec<StarkFelt>);
     PartialOrd,
     Ord,
     derive_more::Deref,
+    Encode,
+    Decode,
 )]
 pub struct TransactionVersion(pub StarkFelt);
 
@@ -491,7 +796,20 @@ impl TransactionVersion {
 }
 
 /// The calldata of a transaction.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct Calldata(pub Arc<Vec<StarkFelt>>);
 
 #[macro_export]
@@ -502,14 +820,40 @@ macro_rules! calldata {
 }
 
 /// An L1 to L2 message.
-#[derive(Debug, Default, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Default,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct MessageToL2 {
     pub from_address: EthAddress,
     pub payload: L1ToL2Payload,
 }
 
 /// An L2 to L1 message.
-#[derive(Debug, Default, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Default,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct MessageToL1 {
     pub from_address: ContractAddress,
     pub to_address: EthAddress,
@@ -517,15 +861,54 @@ pub struct MessageToL1 {
 }
 
 /// The payload of [`MessageToL2`].
-#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct L1ToL2Payload(pub Vec<StarkFelt>);
 
 /// The payload of [`MessageToL1`].
-#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct L2ToL1Payload(pub Vec<StarkFelt>);
 
 /// An event.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct Event {
     pub from_address: ContractAddress,
     #[serde(flatten)]
@@ -533,31 +916,94 @@ pub struct Event {
 }
 
 /// An event content.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct EventContent {
     pub keys: Vec<EventKey>,
     pub data: EventData,
 }
 
 /// An event key.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct EventKey(pub StarkFelt);
 
 /// An event data.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct EventData(pub Vec<StarkFelt>);
 
 /// The index of a transaction in [BlockBody](`crate::block::BlockBody`).
 #[derive(
-    Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Default,
+    Copy,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
-pub struct TransactionOffsetInBlock(pub usize);
+pub struct TransactionOffsetInBlock(pub u64);
 
 /// The index of an event in [TransactionOutput](`crate::transaction::TransactionOutput`).
 #[derive(
-    Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Default,
+    Copy,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
-pub struct EventIndexInTransactionOutput(pub usize);
+pub struct EventIndexInTransactionOutput(pub u64);
 
 /// Transaction fee tip.
 #[derive(
@@ -573,6 +1019,8 @@ pub struct EventIndexInTransactionOutput(pub usize);
     PartialOrd,
     Serialize,
     derive_more::Deref,
+    Encode,
+    Decode,
 )]
 #[serde(from = "PrefixedBytesAsHex<8_usize>", into = "PrefixedBytesAsHex<8_usize>")]
 pub struct Tip(pub u64);
@@ -597,7 +1045,19 @@ impl From<Tip> for StarkFelt {
 
 /// Execution resource.
 #[derive(
-    Clone, Copy, Debug, Deserialize, EnumIter, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Deserialize,
+    EnumIter,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    Serialize,
+    Encode,
+    Decode,
 )]
 pub enum Resource {
     #[serde(rename = "L1_GAS")]
@@ -609,7 +1069,19 @@ pub enum Resource {
 /// Fee bounds for an execution resource.
 /// TODO(Yael): add types ResourceAmount and ResourcePrice and use them instead of u64 and u128.
 #[derive(
-    Clone, Copy, Debug, Default, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Default,
+    Deserialize,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    Serialize,
+    Encode,
+    Decode,
 )]
 pub struct ResourceBounds {
     // Specifies the maximum amount of each resource allowed for usage during the execution.
@@ -652,7 +1124,21 @@ where
 }
 
 /// A mapping from execution resources to their corresponding fee bounds..
-#[derive(Clone, Debug, Default, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone,
+    Debug,
+    Default,
+    Deserialize,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    Serialize,
+    // TODO
+    // Encode,
+    // Decode, 
+)]
 pub struct ResourceBoundsMapping(pub BTreeMap<Resource, ResourceBounds>);
 
 impl TryFrom<Vec<(Resource, ResourceBounds)>> for ResourceBoundsMapping {
@@ -661,8 +1147,8 @@ impl TryFrom<Vec<(Resource, ResourceBounds)>> for ResourceBoundsMapping {
         resource_resource_bounds_pairs: Vec<(Resource, ResourceBounds)>,
     ) -> Result<Self, Self::Error> {
         let n_variants = Resource::iter().count();
-        let unique_resources: HashSet<Resource> =
-            HashSet::from_iter(resource_resource_bounds_pairs.iter().map(|(k, _)| *k));
+        let unique_resources: IndexSet<Resource> =
+            IndexSet::from_iter(resource_resource_bounds_pairs.iter().map(|(k, _)| *k));
         if unique_resources.len() != n_variants
             || resource_resource_bounds_pairs.len() != n_variants
         {
@@ -677,23 +1163,60 @@ impl TryFrom<Vec<(Resource, ResourceBounds)>> for ResourceBoundsMapping {
 }
 
 /// Paymaster-related data.
-#[derive(Clone, Debug, Default, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone,
+    Debug,
+    Default,
+    Deserialize,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    Serialize,
+    Encode,
+    Decode,
+)]
 pub struct PaymasterData(pub Vec<StarkFelt>);
 
 /// If nonempty, will contain the required data for deploying and initializing an account contract:
 /// its class hash, address salt and constructor calldata.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct AccountDeploymentData(pub Vec<StarkFelt>);
 
 /// The execution resources used by a transaction.
-#[derive(Debug, Default, Deserialize, Serialize, Clone, Eq, PartialEq)]
+#[derive(
+    Debug,
+    Default,
+    Deserialize,
+    Serialize,
+    Clone,
+    Eq,
+    PartialEq,
+    // TODO
+    // Encode,
+    // Decode
+)]
 pub struct ExecutionResources {
     pub steps: u64,
-    pub builtin_instance_counter: HashMap<Builtin, u64>,
+    pub builtin_instance_counter: IndexMap<Builtin, u64>,
     pub memory_holes: u64,
 }
 
-#[derive(Hash, Debug, Deserialize, Serialize, Clone, Eq, PartialEq)]
+#[derive(Hash, Debug, Deserialize, Serialize, Clone, Eq, PartialEq, Encode, Decode)]
 pub enum Builtin {
     #[serde(rename = "range_check_builtin_applications")]
     RangeCheck,

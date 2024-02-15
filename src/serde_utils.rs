@@ -3,6 +3,7 @@
 #[path = "serde_utils_test.rs"]
 mod serde_utils_test;
 
+use parity_scale_codec::{Decode, Encode};
 use serde::de::{Deserialize, Visitor};
 use serde::ser::{Serialize, SerializeTuple};
 use serde::Deserializer;
@@ -16,7 +17,7 @@ pub type PrefixedBytesAsHex<const N: usize> = BytesAsHex<N, true>;
 ///
 /// The `PREFIXED` generic type symbolize whether a string representation of the hex value should be
 /// prefixed by `0x` or not.
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Encode, Decode)]
 pub struct BytesAsHex<const N: usize, const PREFIXED: bool>(pub(crate) [u8; N]);
 
 impl<'de, const N: usize, const PREFIXED: bool> Deserialize<'de> for BytesAsHex<N, PREFIXED> {
@@ -76,7 +77,14 @@ impl<const N: usize, const PREFIXED: bool> Serialize for BytesAsHex<N, PREFIXED>
 }
 
 /// The error type returned by the inner deserialization.
-#[derive(thiserror::Error, Clone, Debug)]
+#[derive(
+    thiserror::Error,
+    Clone,
+    Debug,
+    // TODO
+    // Encode, 
+    // Decode
+)]
 pub enum InnerDeserializationError {
     /// Error parsing the hex string.
     #[error(transparent)]

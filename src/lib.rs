@@ -15,10 +15,18 @@ pub mod type_utils;
 
 use std::num::ParseIntError;
 
+// use parity_scale_codec::{Decode, Encode};
 use serde_utils::InnerDeserializationError;
 
 /// The error type returned by StarknetApi.
-#[derive(thiserror::Error, Clone, Debug)]
+#[derive(
+    thiserror::Error,
+    Clone,
+    Debug,
+    // TODO
+    // Encode,
+    // Decode
+)]
 pub enum StarknetApiError {
     /// Error in the inner deserialization of the node.
     #[error(transparent)]

@@ -1,5 +1,4 @@
-use std::collections::HashMap;
-
+use indexmap::IndexMap;
 use serde_json::json;
 
 use crate::deprecated_contract_class::EntryPointOffset;
@@ -11,7 +10,7 @@ fn entry_point_offset_from_json_str() {
             "offset_1":  2 ,
             "offset_2": "0x7b"
         }"#;
-    let offsets: HashMap<String, EntryPointOffset> = serde_json::from_str(data).unwrap();
+    let offsets: IndexMap<String, EntryPointOffset> = serde_json::from_str(data).unwrap();
 
     assert_eq!(EntryPointOffset(2), offsets["offset_1"]);
     assert_eq!(EntryPointOffset(123), offsets["offset_2"]);

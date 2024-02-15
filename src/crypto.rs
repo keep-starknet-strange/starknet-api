@@ -4,13 +4,14 @@
 #[path = "crypto_test.rs"]
 mod crypto_test;
 
+use parity_scale_codec::{Decode, Encode};
 use serde::{Deserialize, Serialize};
 use starknet_crypto::FieldElement;
 
 use crate::hash::StarkFelt;
 
 /// An error that can occur during cryptographic operations.
-#[derive(thiserror::Error, Clone, Debug)]
+#[derive(thiserror::Error, Clone, Debug, Encode, Decode)]
 pub enum CryptoError {
     #[error("Invalid public key {0:?}.")]
     InvalidPublicKey(PublicKey),
@@ -24,13 +25,37 @@ pub enum CryptoError {
 
 /// A public key.
 #[derive(
-    Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Default,
+    Copy,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
 pub struct PublicKey(pub StarkFelt);
 
 /// A signature.
 #[derive(
-    Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Default,
+    Copy,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
 pub struct Signature {
     pub r: StarkFelt,

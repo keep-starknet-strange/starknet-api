@@ -1,29 +1,46 @@
-use std::collections::HashMap;
-
 use cairo_lang_starknet_classes::casm_contract_class::CasmContractEntryPoint;
-use serde::de::Error as DeserializationError;
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use serde_json::Value;
+use indexmap::IndexMap;
+use parity_scale_codec::{Decode, Encode};
+use serde::{Deserialize, Serialize};
 
 use crate::core::EntryPointSelector;
 use crate::serde_utils::deserialize_optional_contract_class_abi_entry_vector;
 use crate::StarknetApiError;
 
 /// A deprecated contract class.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    // TODO
+    // Encode, 
+    // Decode
+)]
 pub struct ContractClass {
     // Starknet does not verify the abi. If we can't parse it, we set it to None.
     #[serde(default, deserialize_with = "deserialize_optional_contract_class_abi_entry_vector")]
     pub abi: Option<Vec<ContractClassAbiEntry>>,
     pub program: Program,
     /// The selector of each entry point is a unique identifier in the program.
-    // TODO: Consider changing to IndexMap, since this is used for computing the
-    // class hash.
-    pub entry_points_by_type: HashMap<EntryPointType, Vec<EntryPoint>>,
+    pub entry_points_by_type: IndexMap<EntryPointType, Vec<EntryPoint>>,
 }
 
 /// A [ContractClass](`crate::deprecated_contract_class::ContractClass`) abi entry.
-#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    // TODO
+    // Encode, 
+    // Decode
+)]
 #[serde(deny_unknown_fields)]
 #[serde(tag = "type")]
 pub enum ContractClassAbiEntry {
@@ -40,7 +57,7 @@ pub enum ContractClassAbiEntry {
 }
 
 /// An event abi entry.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
 pub struct EventAbiEntry {
     pub name: String,
     pub keys: Vec<TypedParameter>,
@@ -48,7 +65,7 @@ pub struct EventAbiEntry {
 }
 
 /// A function abi entry.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
 pub struct FunctionAbiEntry {
     pub name: String,
     pub inputs: Vec<TypedParameter>,
@@ -58,7 +75,7 @@ pub struct FunctionAbiEntry {
 }
 
 /// A function state mutability.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
 pub enum FunctionStateMutability {
     #[serde(rename = "view")]
     #[default]
@@ -66,23 +83,54 @@ pub enum FunctionStateMutability {
 }
 
 /// A struct abi entry.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    Encode,
+    Decode
+)]
 pub struct StructAbiEntry {
     pub name: String,
-    pub size: usize,
+    pub size: u64,
     pub members: Vec<StructMember>,
 }
 
 /// A struct member for [StructAbiEntry](`crate::deprecated_contract_class::StructAbiEntry`).
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    Encode,
+    Decode
+)]
 pub struct StructMember {
     #[serde(flatten)]
     pub param: TypedParameter,
-    pub offset: usize,
+    pub offset: u64,
 }
 
 /// A program corresponding to a [ContractClass](`crate::deprecated_contract_class::ContractClass`).
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    // TODO
+    // Encode, 
+    // Decode
+)]
 pub struct Program {
     #[serde(default)]
     pub attributes: serde_json::Value,
@@ -101,7 +149,19 @@ pub struct Program {
 
 /// An entry point type of a [ContractClass](`crate::deprecated_contract_class::ContractClass`).
 #[derive(
-    Debug, Default, Clone, Copy, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Default,
+    Clone,
+    Copy,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
 #[serde(deny_unknown_fields)]
 pub enum EntryPointType {
@@ -118,7 +178,20 @@ pub enum EntryPointType {
 }
 
 /// An entry point of a [ContractClass](`crate::deprecated_contract_class::ContractClass`).
-#[derive(Debug, Default, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Default,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct EntryPoint {
     pub selector: EntryPointSelector,
     pub offset: EntryPointOffset,
@@ -130,12 +203,13 @@ impl TryFrom<CasmContractEntryPoint> for EntryPoint {
     fn try_from(value: CasmContractEntryPoint) -> Result<Self, Self::Error> {
         Ok(EntryPoint {
             selector: EntryPointSelector(value.selector.to_str_radix(16).as_str().try_into()?),
-            offset: EntryPointOffset(value.offset),
+            // TODO get rid of casting
+            offset: EntryPointOffset(value.offset as u64),
         })
     }
 }
 
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
 pub struct TypedParameter {
     pub name: String,
     pub r#type: String,
@@ -143,38 +217,19 @@ pub struct TypedParameter {
 
 /// The offset of an [EntryPoint](`crate::deprecated_contract_class::EntryPoint`).
 #[derive(
-    Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Copy,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
-pub struct EntryPointOffset(
-    #[serde(deserialize_with = "number_or_string", serialize_with = "usize_to_hex")] pub usize,
-);
-impl TryFrom<String> for EntryPointOffset {
-    type Error = StarknetApiError;
+pub struct EntryPointOffset(pub u64);
 
-    fn try_from(value: String) -> Result<Self, Self::Error> {
-        Ok(Self(hex_string_try_into_usize(&value)?))
-    }
-}
-
-pub fn number_or_string<'de, D: Deserializer<'de>>(deserializer: D) -> Result<usize, D::Error> {
-    let usize_value = match Value::deserialize(deserializer)? {
-        Value::Number(number) => {
-            number.as_u64().ok_or(DeserializationError::custom("Cannot cast number to usize."))?
-                as usize
-        }
-        Value::String(s) => hex_string_try_into_usize(&s).map_err(DeserializationError::custom)?,
-        _ => return Err(DeserializationError::custom("Cannot cast value into usize.")),
-    };
-    Ok(usize_value)
-}
-
-fn hex_string_try_into_usize(hex_string: &str) -> Result<usize, std::num::ParseIntError> {
-    usize::from_str_radix(hex_string.trim_start_matches("0x"), 16)
-}
-
-fn usize_to_hex<S>(value: &usize, s: S) -> Result<S::Ok, S::Error>
-where
-    S: Serializer,
-{
-    s.serialize_str(format!("{:#x}", value).as_str())
-}

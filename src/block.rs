@@ -5,6 +5,7 @@ mod block_test;
 use std::fmt::Display;
 
 use derive_more::Display;
+use parity_scale_codec::{Decode, Encode};
 use serde::{Deserialize, Serialize};
 
 use crate::core::{
@@ -18,14 +19,27 @@ use crate::serde_utils::{BytesAsHex, PrefixedBytesAsHex};
 use crate::transaction::{Transaction, TransactionHash, TransactionOutput};
 
 /// A block.
-#[derive(Debug, Default, Clone, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Default,
+    Clone,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    // TODO
+    // Encode,
+    // Decode
+)]
 pub struct Block {
     pub header: BlockHeader,
     pub body: BlockBody,
 }
 
 /// A version of the Starknet protocol used when creating a block.
-#[derive(Clone, Debug, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Clone, Debug, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, Encode, Decode,
+)]
 pub struct StarknetVersion(pub String);
 
 impl Default for StarknetVersion {
@@ -41,7 +55,20 @@ impl Display for StarknetVersion {
 }
 
 /// The header of a [Block](`crate::block::Block`).
-#[derive(Debug, Default, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Default,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
+)]
 pub struct BlockHeader {
     // TODO: Consider removing the block hash from the header (note it can be computed from
     // the rest of the fields.
@@ -56,15 +83,26 @@ pub struct BlockHeader {
     pub l1_da_mode: L1DataAvailabilityMode,
     pub transaction_commitment: TransactionCommitment,
     pub event_commitment: EventCommitment,
-    pub n_transactions: usize,
-    pub n_events: usize,
+    pub n_transactions: u64,
+    pub n_events: u64,
     // TODO: add missing state diff commitment.
     pub starknet_version: StarknetVersion,
 }
 
 /// The [transactions](`crate::transaction::Transaction`) and their
 /// [outputs](`crate::transaction::TransactionOutput`) in a [block](`crate::block::Block`).
-#[derive(Debug, Default, Clone, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(
+    Debug,
+    Default,
+    Clone,
+    Eq,
+    PartialEq,
+    Deserialize,
+    Serialize,
+    // TODO
+    // Encode, 
+    // Decode 
+)]
 pub struct BlockBody {
     pub transactions: Vec<Transaction>,
     pub transaction_outputs: Vec<TransactionOutput>,
@@ -72,7 +110,9 @@ pub struct BlockBody {
 }
 
 /// The status of a [Block](`crate::block::Block`).
-#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(
+    Debug, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, Encode, Decode,
+)]
 pub enum BlockStatus {
     /// A pending block; i.e., a block that is yet to be closed.
     #[serde(rename = "PENDING")]
@@ -102,6 +142,8 @@ pub enum BlockStatus {
     PartialOrd,
     Ord,
     Display,
+    Encode,
+    Decode,
 )]
 pub struct BlockHash(pub StarkHash);
 
@@ -119,6 +161,8 @@ pub struct BlockHash(pub StarkHash);
     Serialize,
     PartialOrd,
     Ord,
+    Encode,
+    Decode,
 )]
 pub struct BlockNumber(pub u64);
 
@@ -143,7 +187,19 @@ impl BlockNumber {
 // TODO(yair): Consider moving GasPricePerToken and GasPrice to core.
 /// The gas price per token.
 #[derive(
-    Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Copy,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
 pub struct GasPricePerToken {
     pub price_in_fri: GasPrice,
@@ -152,7 +208,19 @@ pub struct GasPricePerToken {
 
 /// The gas price at a [Block](`crate::block::Block`).
 #[derive(
-    Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Copy,
+    Clone,
+    Default,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
 #[serde(from = "PrefixedBytesAsHex<16_usize>", into = "PrefixedBytesAsHex<16_usize>")]
 pub struct GasPrice(pub u128);
@@ -171,19 +239,43 @@ impl From<GasPrice> for PrefixedBytesAsHex<16_usize> {
 
 /// The timestamp of a [Block](`crate::block::Block`).
 #[derive(
-    Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Default,
+    Copy,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
 pub struct BlockTimestamp(pub u64);
 
 /// The signature of a [Block](`crate::block::Block`), signed by the sequencer. The signed message
 /// is defined as poseidon_hash(block_hash, state_diff_commitment).
 #[derive(
-    Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+    Debug,
+    Default,
+    Copy,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Deserialize,
+    Serialize,
+    PartialOrd,
+    Ord,
+    Encode,
+    Decode,
 )]
 pub struct BlockSignature(pub Signature);
 
 /// The error type returned from the block verification functions.
-#[derive(thiserror::Error, Clone, Debug)]
+#[derive(thiserror::Error, Clone, Debug, Encode, Decode)]
 pub enum BlockVerificationError {
     #[error("Failed to verify the signature of block {block_hash}. Error: {error}")]
     BlockSignatureVerificationFailed { block_hash: BlockHash, error: CryptoError },
