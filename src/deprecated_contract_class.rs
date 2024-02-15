@@ -39,9 +39,8 @@ pub struct ContractClass {
     PartialEq,
     Deserialize,
     Serialize,
-    // TODO
-    // Encode,
-    // Decode
+    Encode,
+    Decode
 )]
 #[serde(deny_unknown_fields)]
 #[serde(tag = "type")]

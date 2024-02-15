@@ -31,7 +31,7 @@ pub type DeprecatedDeclaredClasses = IndexMap<ClassHash, DeprecatedContractClass
     Serialize,
     // TODO
     // Encode,
-    // Decode 
+    // Decode
 )]
 pub struct StateUpdate {
     pub block_hash: BlockHash,
@@ -263,22 +263,42 @@ impl From<u128> for StorageKey {
 impl_from_through_intermediate!(u128, StorageKey, u8, u16, u32, u64);
 
 /// A contract class.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Deserialize,
-    Serialize,
-    // TODO
-    // Encode,
-    // Decode
-)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
 pub struct ContractClass {
     pub sierra_program: Vec<StarkFelt>,
     pub entry_points_by_type: IndexMap<EntryPointType, Vec<EntryPoint>>,
     pub abi: String,
+}
+
+impl Encode for ContractClass {
+    fn size_hint(&self) -> usize {
+        self.sierra_program.size_hint()
+            + 1
+            + self.entry_points_by_type.len() * core::mem::size_of::<EntryPointType>()
+            + self.abi.size_hint()
+    }
+
+    fn encode_to<T: parity_scale_codec::Output + ?Sized>(&self, dest: &mut T) {
+        self.sierra_program.encode_to(dest);
+        parity_scale_codec::Compact(self.entry_points_by_type.len() as u32).encode_to(dest);
+        self.entry_points_by_type.iter().for_each(|v| v.encode_to(dest));
+        self.abi.encode_to(dest);
+    }
+}
+
+impl Decode for ContractClass {
+    fn decode<I: parity_scale_codec::Input>(
+        input: &mut I,
+    ) -> Result<Self, parity_scale_codec::Error> {
+        let data =
+            <(Vec<StarkFelt>, Vec<(EntryPointType, Vec<EntryPoint>)>, String)>::decode(input)?;
+
+        Ok(ContractClass {
+            sierra_program: data.0,
+            entry_points_by_type: data.1.into_iter().collect(),
+            abi: data.2,
+        })
+    }
 }
 
 #[derive(

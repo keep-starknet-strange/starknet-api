@@ -1135,9 +1135,8 @@ where
     PartialEq,
     PartialOrd,
     Serialize,
-    // TODO
-    // Encode,
-    // Decode, 
+    Encode,
+    Decode, 
 )]
 pub struct ResourceBoundsMapping(pub BTreeMap<Resource, ResourceBounds>);
 

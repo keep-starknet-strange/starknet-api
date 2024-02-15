@@ -60,7 +60,7 @@ mod thin_state_diff_tests {
         replaced_classes.insert(ContractAddress::from(21_u32), ClassHash::default());
 
         let deprecated_declared_classes = vec![ClassHash::default()];
-        
+
         let state_diff = ThinStateDiff {
             deployed_contracts,
             storage_diffs,
@@ -75,5 +75,48 @@ mod thin_state_diff_tests {
         let decoded = ThinStateDiff::decode(&mut &encoded[..]).unwrap();
 
         assert_eq!(state_diff, decoded);
+    }
+}
+
+#[cfg(test)]
+mod contract_class_scale_test {
+    use std::collections::hash_map::RandomState as HasherBuilder;
+
+    use parity_scale_codec::{Decode, Encode};
+
+    use super::*;
+    use crate::state::{
+        ContractClass, EntryPoint, EntryPointSelector, EntryPointType, FunctionIndex, StarkFelt,
+    };
+
+    #[test]
+    fn encode_decode_work() {
+        let sierra_program =
+            vec![StarkFelt::from(0u128), StarkFelt::from(1u128), StarkFelt::from(u128::MAX)];
+        let abi = String::from("Some string");
+        let entry_points_by_type =
+            IndexMap::<EntryPointType, Vec<EntryPoint>, HasherBuilder>::from_iter(vec![
+                (
+                    EntryPointType::Constructor,
+                    vec![EntryPoint {
+                        function_idx: FunctionIndex(100),
+                        selector: EntryPointSelector(StarkFelt::from(9u128)),
+                    }],
+                ),
+                (
+                    EntryPointType::External,
+                    vec![EntryPoint {
+                        function_idx: FunctionIndex(12),
+                        selector: EntryPointSelector(StarkFelt::from(66u128)),
+                    }],
+                ),
+            ]);
+
+        let contract_class = ContractClass { sierra_program, entry_points_by_type, abi };
+
+        let encoded = contract_class.encode();
+        let decoded = ContractClass::decode(&mut &encoded[..]).unwrap();
+
+        assert_eq!(contract_class, decoded);
     }
 }
