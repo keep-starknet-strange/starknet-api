@@ -1,7 +1,9 @@
 use cairo_lang_starknet_classes::casm_contract_class::CasmContractEntryPoint;
 use indexmap::IndexMap;
 use parity_scale_codec::{Decode, Encode};
-use serde::{Deserialize, Serialize};
+use serde::de::Error as DeserializationError;
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde_json::Value;
 
 use crate::core::EntryPointSelector;
 use crate::serde_utils::deserialize_optional_contract_class_abi_entry_vector;
@@ -17,7 +19,7 @@ use crate::StarknetApiError;
     Deserialize,
     Serialize,
     // TODO
-    // Encode, 
+    // Encode,
     // Decode
 )]
 pub struct ContractClass {
@@ -38,7 +40,7 @@ pub struct ContractClass {
     Deserialize,
     Serialize,
     // TODO
-    // Encode, 
+    // Encode,
     // Decode
 )]
 #[serde(deny_unknown_fields)]
@@ -83,17 +85,7 @@ pub enum FunctionStateMutability {
 }
 
 /// A struct abi entry.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Deserialize,
-    Serialize,
-    Encode,
-    Decode
-)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
 pub struct StructAbiEntry {
     pub name: String,
     pub size: u64,
@@ -101,17 +93,7 @@ pub struct StructAbiEntry {
 }
 
 /// A struct member for [StructAbiEntry](`crate::deprecated_contract_class::StructAbiEntry`).
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Deserialize,
-    Serialize,
-    Encode,
-    Decode
-)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
 pub struct StructMember {
     #[serde(flatten)]
     pub param: TypedParameter,
@@ -128,7 +110,7 @@ pub struct StructMember {
     Deserialize,
     Serialize,
     // TODO
-    // Encode, 
+    // Encode,
     // Decode
 )]
 pub struct Program {
@@ -231,5 +213,35 @@ pub struct TypedParameter {
     Encode,
     Decode,
 )]
-pub struct EntryPointOffset(pub u64);
+pub struct EntryPointOffset(
+    #[serde(deserialize_with = "number_or_string", serialize_with = "u64_to_hex")] pub u64,
+);
+impl TryFrom<String> for EntryPointOffset {
+    type Error = StarknetApiError;
 
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        Ok(Self(hex_string_try_into_u64(&value)?))
+    }
+}
+
+pub fn number_or_string<'de, D: Deserializer<'de>>(deserializer: D) -> Result<u64, D::Error> {
+    let value = match Value::deserialize(deserializer)? {
+        Value::Number(number) => {
+            number.as_u64().ok_or(DeserializationError::custom("Cannot cast number to usize."))?
+        }
+        Value::String(s) => hex_string_try_into_u64(&s).map_err(DeserializationError::custom)?,
+        _ => return Err(DeserializationError::custom("Cannot cast value into usize.")),
+    };
+    Ok(value)
+}
+
+fn hex_string_try_into_u64(hex_string: &str) -> Result<u64, std::num::ParseIntError> {
+    u64::from_str_radix(hex_string.trim_start_matches("0x"), 16)
+}
+
+fn u64_to_hex<S>(value: &u64, s: S) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    s.serialize_str(format!("{:#x}", value).as_str())
+}

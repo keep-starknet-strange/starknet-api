@@ -30,7 +30,7 @@ pub type DeprecatedDeclaredClasses = IndexMap<ClassHash, DeprecatedContractClass
     Deserialize,
     Serialize,
     // TODO
-    // Encode, 
+    // Encode,
     // Decode 
 )]
 pub struct StateUpdate {
@@ -53,8 +53,8 @@ pub struct StateUpdate {
     Deserialize,
     Serialize,
     // TODO
-    // Encode, 
-    // Decode 
+    // Encode,
+    // Decode
 )]
 pub struct StateDiff {
     pub deployed_contracts: IndexMap<ContractAddress, ClassHash>,
@@ -68,17 +68,7 @@ pub struct StateDiff {
 // Invariant: Addresses are strictly increasing.
 // The invariant is enforced as [`ThinStateDiff`] is created only from [`starknet_api`][`StateDiff`]
 // where the addresses are strictly increasing.
-#[derive(
-    Debug,
-    Clone,
-    Eq,
-    PartialEq,
-    Deserialize,
-    Serialize,
-    // TODO
-    // Encode, 
-    // Decode 
-)]
+#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize)]
 pub struct ThinStateDiff {
     pub deployed_contracts: IndexMap<ContractAddress, ClassHash>,
     pub storage_diffs: IndexMap<ContractAddress, IndexMap<StorageKey, StarkFelt>>,
@@ -120,6 +110,69 @@ impl ThinStateDiff {
 impl From<StateDiff> for ThinStateDiff {
     fn from(diff: StateDiff) -> Self {
         Self::from_state_diff(diff).0
+    }
+}
+
+impl Encode for ThinStateDiff {
+    fn size_hint(&self) -> usize {
+        (6 + self.storage_diffs.len())
+            + self.deployed_contracts.len()
+                * (core::mem::size_of::<ContractAddress>() + core::mem::size_of::<ClassHash>())
+            + self.nonces.len()
+                * (core::mem::size_of::<ContractAddress>() + core::mem::size_of::<Nonce>())
+            + self.declared_classes.len()
+                * (core::mem::size_of::<ClassHash>() + core::mem::size_of::<CompiledClassHash>())
+            + self.storage_diffs.len() * core::mem::size_of::<ContractAddress>()
+            + self.deprecated_declared_classes.len() * core::mem::size_of::<ClassHash>()
+            + self.replaced_classes.len()
+                * (core::mem::size_of::<ContractAddress>() + core::mem::size_of::<ClassHash>())
+    }
+
+    fn encode_to<T: parity_scale_codec::Output + ?Sized>(&self, dest: &mut T) {
+        parity_scale_codec::Compact(self.deployed_contracts.len() as u64).encode_to(dest);
+        self.deployed_contracts.iter().for_each(|v| v.encode_to(dest));
+        parity_scale_codec::Compact(self.storage_diffs.len() as u64).encode_to(dest);
+        self.storage_diffs.iter().for_each(|(address, idx_map)| {
+            address.encode_to(dest);
+            parity_scale_codec::Compact(idx_map.len() as u64).encode_to(dest);
+            idx_map.iter().for_each(|v| v.encode_to(dest));
+        });
+        parity_scale_codec::Compact(self.declared_classes.len() as u64).encode_to(dest);
+        self.declared_classes.iter().for_each(|v| v.encode_to(dest));
+        parity_scale_codec::Compact(self.deprecated_declared_classes.len() as u64).encode_to(dest);
+        self.deprecated_declared_classes.iter().for_each(|v| v.encode_to(dest));
+        parity_scale_codec::Compact(self.nonces.len() as u64).encode_to(dest);
+        self.nonces.iter().for_each(|v| v.encode_to(dest));
+        parity_scale_codec::Compact(self.replaced_classes.len() as u64).encode_to(dest);
+        self.replaced_classes.iter().for_each(|v| v.encode_to(dest));
+    }
+}
+
+impl Decode for ThinStateDiff {
+    fn decode<I: parity_scale_codec::Input>(
+        input: &mut I,
+    ) -> Result<Self, parity_scale_codec::Error> {
+        let res = <(
+            Vec<(ContractAddress, ClassHash)>,
+            Vec<(ContractAddress, Vec<(StorageKey, StarkFelt)>)>,
+            Vec<(ClassHash, CompiledClassHash)>,
+            Vec<ClassHash>,
+            Vec<(ContractAddress, Nonce)>,
+            Vec<(ContractAddress, ClassHash)>,
+        )>::decode(input)?;
+
+        Ok(ThinStateDiff {
+            deployed_contracts: res.0.into_iter().collect(),
+            storage_diffs: res
+                .1
+                .into_iter()
+                .map(|(address, v)| (address, v.into_iter().collect()))
+                .collect(),
+            declared_classes: res.2.into_iter().collect(),
+            deprecated_declared_classes: res.3.into_iter().collect(),
+            nonces: res.4.into_iter().collect(),
+            replaced_classes: res.5.into_iter().collect(),
+        })
     }
 }
 
@@ -219,8 +272,8 @@ impl_from_through_intermediate!(u128, StorageKey, u8, u16, u32, u64);
     Deserialize,
     Serialize,
     // TODO
-    // Encode, 
-    // Decode 
+    // Encode,
+    // Decode
 )]
 pub struct ContractClass {
     pub sierra_program: Vec<StarkFelt>,
@@ -270,7 +323,7 @@ pub enum EntryPointType {
     PartialOrd,
     Ord,
     Encode,
-    Decode, 
+    Decode,
 )]
 pub struct EntryPoint {
     pub function_idx: FunctionIndex,
@@ -290,6 +343,6 @@ pub struct EntryPoint {
     PartialOrd,
     Ord,
     Encode,
-    Decode
+    Decode,
 )]
 pub struct FunctionIndex(pub u64);
