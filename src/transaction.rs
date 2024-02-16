@@ -476,16 +476,7 @@ pub struct L1HandlerTransactionOutput {
 }
 
 /// A transaction receipt.
-#[derive(
-    Debug,
-    Clone,
-    Eq,
-    PartialEq,
-    Deserialize,
-    Serialize,
-    Encode,
-    Decode
-)]
+#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
 pub struct TransactionReceipt {
     pub transaction_hash: TransactionHash,
     pub block_hash: BlockHash,

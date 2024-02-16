@@ -3,7 +3,7 @@ use indexmap::IndexMap;
 use parity_scale_codec::{Decode, Encode};
 use serde::de::Error as DeserializationError;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use serde_json::Value;
+use serde_json::{json, Value};
 
 use crate::core::EntryPointSelector;
 use crate::serde_utils::deserialize_optional_contract_class_abi_entry_vector;
@@ -91,18 +91,7 @@ pub struct StructMember {
 }
 
 /// A program corresponding to a [ContractClass](`crate::deprecated_contract_class::ContractClass`).
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Deserialize,
-    Serialize,
-    // TODO
-    // Encode,
-    // Decode
-)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
 pub struct Program {
     #[serde(default)]
     pub attributes: serde_json::Value,
@@ -117,6 +106,26 @@ pub struct Program {
     pub main_scope: serde_json::Value,
     pub prime: serde_json::Value,
     pub reference_manager: serde_json::Value,
+}
+
+// TODO: Find out smarter way than `Program` -> Json -> SCALE
+impl Encode for Program {
+    fn encode(&self) -> Vec<u8> {
+        let json_repr: String = json!(self).to_string();
+        json_repr.encode()
+    }
+}
+
+// TODO: Find out smarter way than SCALE -> Json -> `Program`
+impl Decode for Program {
+    fn decode<I: parity_scale_codec::Input>(
+        input: &mut I,
+    ) -> Result<Self, parity_scale_codec::Error> {
+        let json_repr = <String>::decode(input)?;
+        serde_json::from_str(&json_repr).map_err(|_e| {
+            parity_scale_codec::Error::from("serde_json deserialization error for Program")
+        })
+    }
 }
 
 /// An entry point type of a [ContractClass](`crate::deprecated_contract_class::ContractClass`).
