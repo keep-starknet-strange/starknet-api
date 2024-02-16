@@ -32,16 +32,7 @@ pub struct ContractClass {
 }
 
 /// A [ContractClass](`crate::deprecated_contract_class::ContractClass`) abi entry.
-#[derive(
-    Debug,
-    Clone,
-    Eq,
-    PartialEq,
-    Deserialize,
-    Serialize,
-    Encode,
-    Decode
-)]
+#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
 #[serde(deny_unknown_fields)]
 #[serde(tag = "type")]
 pub enum ContractClassAbiEntry {

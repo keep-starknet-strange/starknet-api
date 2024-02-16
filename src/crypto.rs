@@ -1,9 +1,5 @@
 //! Cryptographic utilities.
 //! This module provides cryptographic utilities.
-#[cfg(test)]
-#[path = "crypto_test.rs"]
-mod crypto_test;
-
 use parity_scale_codec::{Decode, Encode};
 use serde::{Deserialize, Serialize};
 use starknet_crypto::FieldElement;

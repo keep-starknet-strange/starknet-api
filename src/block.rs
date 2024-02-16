@@ -1,7 +1,3 @@
-#[cfg(test)]
-#[path = "block_test.rs"]
-mod block_test;
-
 use std::fmt::Display;
 
 use derive_more::Display;
@@ -27,9 +23,8 @@ use crate::transaction::{Transaction, TransactionHash, TransactionOutput};
     PartialEq,
     Deserialize,
     Serialize,
-    // TODO
-    // Encode,
-    // Decode
+    Encode,
+    Decode
 )]
 pub struct Block {
     pub header: BlockHeader,
@@ -99,9 +94,8 @@ pub struct BlockHeader {
     PartialEq,
     Deserialize,
     Serialize,
-    // TODO
-    // Encode, 
-    // Decode 
+    Encode,
+    Decode
 )]
 pub struct BlockBody {
     pub transactions: Vec<Transaction>,

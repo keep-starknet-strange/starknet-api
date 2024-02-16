@@ -27,9 +27,9 @@ mod thin_state_diff_tests {
     use parity_scale_codec::{Decode, Encode};
 
     use super::*;
-    use crate::state::{
-        ClassHash, CompiledClassHash, ContractAddress, Nonce, StarkFelt, StorageKey, ThinStateDiff,
-    };
+    use crate::core::{ClassHash, CompiledClassHash, ContractAddress, Nonce};
+    use crate::hash::StarkFelt;
+    use crate::state::{StorageKey, ThinStateDiff};
 
     #[test]
     fn encode_decode_works() {
@@ -85,9 +85,9 @@ mod contract_class_scale_test {
     use parity_scale_codec::{Decode, Encode};
 
     use super::*;
-    use crate::state::{
-        ContractClass, EntryPoint, EntryPointSelector, EntryPointType, FunctionIndex, StarkFelt,
-    };
+    use crate::core::EntryPointSelector;
+    use crate::hash::StarkFelt;
+    use crate::state::{ContractClass, EntryPoint, EntryPointType, FunctionIndex};
 
     #[test]
     fn encode_decode_work() {

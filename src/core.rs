@@ -1,7 +1,3 @@
-#[cfg(test)]
-#[path = "core_test.rs"]
-mod core_test;
-
 use std::fmt::Debug;
 
 use derive_more::Display;
@@ -284,7 +280,7 @@ pub struct EventCommitment(pub StarkHash);
     Encode,
     Decode,
 )]
-pub struct PatriciaKey(StarkHash);
+pub struct PatriciaKey(pub StarkHash);
 
 // 2**251
 pub const PATRICIA_KEY_UPPER_BOUND: &str =

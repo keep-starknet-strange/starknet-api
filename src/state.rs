@@ -1,6 +1,3 @@
-#[cfg(test)]
-#[path = "state_test.rs"]
-mod state_test;
 use std::fmt::Debug;
 
 use indexmap::IndexMap;

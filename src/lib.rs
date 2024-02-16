@@ -13,6 +13,9 @@ pub mod state;
 pub mod transaction;
 pub mod type_utils;
 
+#[cfg(test)]
+mod test;
+
 use std::num::ParseIntError;
 
 // use parity_scale_codec::{Decode, Encode};

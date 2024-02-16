@@ -1,8 +1,4 @@
 //! Utilities for serialising/deserialising hexadecimal values.
-#[cfg(test)]
-#[path = "serde_utils_test.rs"]
-mod serde_utils_test;
-
 use parity_scale_codec::{Decode, Encode};
 use serde::de::{Deserialize, Visitor};
 use serde::ser::{Serialize, SerializeTuple};
@@ -82,7 +78,7 @@ impl<const N: usize, const PREFIXED: bool> Serialize for BytesAsHex<N, PREFIXED>
     Clone,
     Debug,
     // TODO
-    // Encode, 
+    // Encode,
     // Decode
 )]
 pub enum InnerDeserializationError {

@@ -20,18 +20,7 @@ use crate::StarknetApiError;
 
 /// A transaction.
 #[derive(
-    Debug,
-    Clone,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    // TODO
-    // Encode, 
-    // Decode, 
+    Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, Encode, Decode,
 )]
 pub enum Transaction {
     /// A declare transaction.
@@ -47,17 +36,7 @@ pub enum Transaction {
 }
 
 /// A transaction output.
-#[derive(
-    Debug,
-    Clone,
-    Eq,
-    PartialEq,
-    Deserialize,
-    Serialize,
-    // TODO
-    // Encode, 
-    // Decode 
-)]
+#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
 pub enum TransactionOutput {
     /// A declare transaction output.
     Declare(DeclareTransactionOutput),
@@ -152,18 +131,7 @@ pub struct DeclareTransactionV2 {
 
 /// A declare V3 transaction.
 #[derive(
-    Clone,
-    Debug,
-    Deserialize,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd,
-    Serialize, 
-    // TODO
-    // Encode, 
-    // Decode, 
+    Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize, Encode, Decode,
 )]
 pub struct DeclareTransactionV3 {
     pub resource_bounds: ResourceBoundsMapping,
@@ -180,18 +148,7 @@ pub struct DeclareTransactionV3 {
 }
 
 #[derive(
-    Debug,
-    Clone,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord, 
-    // TODO
-    // Encode, 
-    // Decode
+    Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, Encode, Decode,
 )]
 pub enum DeclareTransaction {
     V0(DeclareTransactionV0V1),
@@ -257,18 +214,7 @@ pub struct DeployAccountTransactionV1 {
 
 /// A deploy account V3 transaction.
 #[derive(
-    Debug,
-    Clone,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    // TODO
-    // Encode,
-    // Decode, 
+    Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, Encode, Decode,
 )]
 pub struct DeployAccountTransactionV3 {
     pub resource_bounds: ResourceBoundsMapping,
@@ -284,19 +230,7 @@ pub struct DeployAccountTransactionV3 {
 }
 
 #[derive(
-    Debug,
-    Clone,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    From,
-    // TODO
-    // Encode,
-    // Decode,
+    Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, From, Encode, Decode,
 )]
 pub enum DeployAccountTransaction {
     V1(DeployAccountTransactionV1),
@@ -402,18 +336,7 @@ pub struct InvokeTransactionV1 {
 
 /// An invoke V3 transaction.
 #[derive(
-    Debug,
-    Clone,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    // TODO
-    // Encode, 
-    // Decode,
+    Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, Encode, Decode,
 )]
 pub struct InvokeTransactionV3 {
     pub resource_bounds: ResourceBoundsMapping,
@@ -429,19 +352,7 @@ pub struct InvokeTransactionV3 {
 }
 
 #[derive(
-    Debug,
-    Clone,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    From,
-    // TODO
-    // Encode, 
-    // Decode,
+    Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, From, Encode, Decode,
 )]
 pub enum InvokeTransaction {
     V0(InvokeTransactionV0),
@@ -513,18 +424,7 @@ pub struct L1HandlerTransaction {
 }
 
 /// A declare transaction output.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Deserialize,
-    Serialize,
-    // TODO
-    // Encode,
-    // Decode
-)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
 pub struct DeclareTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -534,18 +434,7 @@ pub struct DeclareTransactionOutput {
 }
 
 /// A deploy-account transaction output.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Deserialize,
-    Serialize,
-    // TODO
-    // Encode,
-    // Decode
-)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
 pub struct DeployAccountTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -556,18 +445,7 @@ pub struct DeployAccountTransactionOutput {
 }
 
 /// A deploy transaction output.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Deserialize,
-    Serialize,
-    // TODO
-    // Encode,
-    // Decode
-)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
 pub struct DeployTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -578,18 +456,7 @@ pub struct DeployTransactionOutput {
 }
 
 /// An invoke transaction output.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Deserialize,
-    Serialize,
-    // TODO
-    // Encode, 
-    // Decode
-)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
 pub struct InvokeTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -599,18 +466,7 @@ pub struct InvokeTransactionOutput {
 }
 
 /// An L1 handler transaction output.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Deserialize,
-    Serialize,
-    // TODO
-    // Encode,
-    // Decode 
-)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
 pub struct L1HandlerTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -627,9 +483,8 @@ pub struct L1HandlerTransactionOutput {
     PartialEq,
     Deserialize,
     Serialize,
-    // TODO
-    // Encode, 
-    // Decode
+    Encode,
+    Decode
 )]
 pub struct TransactionReceipt {
     pub transaction_hash: TransactionHash,
@@ -1136,7 +991,7 @@ where
     PartialOrd,
     Serialize,
     Encode,
-    Decode, 
+    Decode,
 )]
 pub struct ResourceBoundsMapping(pub BTreeMap<Resource, ResourceBounds>);
 
@@ -1197,22 +1052,40 @@ pub struct PaymasterData(pub Vec<StarkFelt>);
 pub struct AccountDeploymentData(pub Vec<StarkFelt>);
 
 /// The execution resources used by a transaction.
-#[derive(
-    Debug,
-    Default,
-    Deserialize,
-    Serialize,
-    Clone,
-    Eq,
-    PartialEq,
-    // TODO
-    // Encode,
-    // Decode
-)]
+#[derive(Debug, Default, Deserialize, Serialize, Clone, Eq, PartialEq)]
 pub struct ExecutionResources {
     pub steps: u64,
     pub builtin_instance_counter: IndexMap<Builtin, u64>,
     pub memory_holes: u64,
+}
+
+impl Encode for ExecutionResources {
+    fn size_hint(&self) -> usize {
+        self.steps.size_hint()
+            + self.builtin_instance_counter.len() * core::mem::size_of::<Builtin>()
+            + self.memory_holes.size_hint()
+    }
+
+    fn encode_to<T: parity_scale_codec::Output + ?Sized>(&self, dest: &mut T) {
+        self.steps.encode_to(dest);
+        parity_scale_codec::Compact(self.builtin_instance_counter.len() as u32).encode_to(dest);
+        self.builtin_instance_counter.iter().for_each(|v| v.encode_to(dest));
+        self.memory_holes.encode_to(dest);
+    }
+}
+
+impl Decode for ExecutionResources {
+    fn decode<I: parity_scale_codec::Input>(
+        input: &mut I,
+    ) -> Result<Self, parity_scale_codec::Error> {
+        let data = <(u64, Vec<(Builtin, u64)>, u64)>::decode(input)?;
+
+        Ok(ExecutionResources {
+            steps: data.0,
+            builtin_instance_counter: data.1.into_iter().collect(),
+            memory_holes: data.2,
+        })
+    }
 }
 
 #[derive(Hash, Debug, Deserialize, Serialize, Clone, Eq, PartialEq, Encode, Decode)]

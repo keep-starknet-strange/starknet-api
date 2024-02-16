@@ -1,7 +1,3 @@
-#[cfg(test)]
-#[path = "hash_test.rs"]
-mod hash_test;
-
 use std::fmt::{Debug, Display};
 use std::io::Error;
 
@@ -72,7 +68,7 @@ pub fn poseidon_hash_array(felts: &[StarkFelt]) -> PoseidonHash {
     Decode,
 )]
 #[serde(try_from = "PrefixedBytesAsHex<32_usize>", into = "PrefixedBytesAsHex<32_usize>")]
-pub struct StarkFelt([u8; 32]);
+pub struct StarkFelt(pub [u8; 32]);
 
 impl StarkFelt {
     /// Returns a new [`StarkFelt`].
