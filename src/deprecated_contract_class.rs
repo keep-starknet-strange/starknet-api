@@ -10,18 +10,7 @@ use crate::serde_utils::deserialize_optional_contract_class_abi_entry_vector;
 use crate::StarknetApiError;
 
 /// A deprecated contract class.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Deserialize,
-    Serialize,
-    // TODO
-    // Encode,
-    // Decode
-)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
 pub struct ContractClass {
     // Starknet does not verify the abi. If we can't parse it, we set it to None.
     #[serde(default, deserialize_with = "deserialize_optional_contract_class_abi_entry_vector")]
@@ -29,6 +18,28 @@ pub struct ContractClass {
     pub program: Program,
     /// The selector of each entry point is a unique identifier in the program.
     pub entry_points_by_type: IndexMap<EntryPointType, Vec<EntryPoint>>,
+}
+
+// TODO find a smarter way than using JSON
+// Start refactoring with `Program` struct
+impl Encode for ContractClass {
+    fn encode(&self) -> Vec<u8> {
+        let json_repr: String = json!(self).to_string();
+        json_repr.encode()
+    }
+}
+
+// TODO find a smarter way than using JSON
+// Start refactoring with `Program` struct
+impl Decode for ContractClass {
+    fn decode<I: parity_scale_codec::Input>(
+        input: &mut I,
+    ) -> Result<Self, parity_scale_codec::Error> {
+        let json_repr = <String>::decode(input)?;
+        serde_json::from_str(&json_repr).map_err(|_e| {
+            parity_scale_codec::Error::from("serde_json deserialization error for ContractClass")
+        })
+    }
 }
 
 /// A [ContractClass](`crate::deprecated_contract_class::ContractClass`) abi entry.
