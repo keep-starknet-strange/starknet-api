@@ -3,6 +3,7 @@ use std::fmt::Debug;
 use indexmap::IndexMap;
 use parity_scale_codec::{Decode, Encode};
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 
 use crate::block::{BlockHash, BlockNumber};
 use crate::core::{
@@ -18,18 +19,7 @@ pub type DeprecatedDeclaredClasses = IndexMap<ClassHash, DeprecatedContractClass
 
 /// The differences between two states before and after a block with hash block_hash
 /// and their respective roots.
-#[derive(
-    Debug,
-    Default,
-    Clone,
-    Eq,
-    PartialEq,
-    Deserialize,
-    Serialize,
-    // TODO
-    // Encode,
-    // Decode
-)]
+#[derive(Debug, Default, Clone, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
 pub struct StateUpdate {
     pub block_hash: BlockHash,
     pub new_root: GlobalRoot,
@@ -41,18 +31,7 @@ pub struct StateUpdate {
 // Invariant: Addresses are strictly increasing.
 // Invariant: Class hashes of declared_classes and deprecated_declared_classes are exclusive.
 // TODO(yair): Enforce this invariant.
-#[derive(
-    Debug,
-    Default,
-    Clone,
-    Eq,
-    PartialEq,
-    Deserialize,
-    Serialize,
-    // TODO
-    // Encode,
-    // Decode
-)]
+#[derive(Debug, Default, Clone, Eq, PartialEq, Deserialize, Serialize)]
 pub struct StateDiff {
     pub deployed_contracts: IndexMap<ContractAddress, ClassHash>,
     pub storage_diffs: IndexMap<ContractAddress, IndexMap<StorageKey, StarkFelt>>,
@@ -60,6 +39,27 @@ pub struct StateDiff {
     pub deprecated_declared_classes: IndexMap<ClassHash, DeprecatedContractClass>,
     pub nonces: IndexMap<ContractAddress, Nonce>,
     pub replaced_classes: IndexMap<ContractAddress, ClassHash>,
+}
+// TODO find a smarter way than using JSON
+// Start refactoring with `Program` struct and then `DeprecatedContractClass`
+impl Encode for StateDiff {
+    fn encode(&self) -> Vec<u8> {
+        let json_repr: String = json!(self).to_string();
+        json_repr.encode()
+    }
+}
+
+// TODO find a smarter way than using JSON
+// Start refactoring with `Program` struct and then `DeprecatedContractClass`
+impl Decode for StateDiff {
+    fn decode<I: parity_scale_codec::Input>(
+        input: &mut I,
+    ) -> Result<Self, parity_scale_codec::Error> {
+        let json_repr = <String>::decode(input)?;
+        serde_json::from_str(&json_repr).map_err(|_e| {
+            parity_scale_codec::Error::from("serde_json deserialization error for ContractClass")
+        })
+    }
 }
 
 // Invariant: Addresses are strictly increasing.

@@ -73,14 +73,7 @@ impl<const N: usize, const PREFIXED: bool> Serialize for BytesAsHex<N, PREFIXED>
 }
 
 /// The error type returned by the inner deserialization.
-#[derive(
-    thiserror::Error,
-    Clone,
-    Debug,
-    // TODO
-    // Encode,
-    // Decode
-)]
+#[derive(thiserror::Error, Clone, Debug)]
 pub enum InnerDeserializationError {
     /// Error parsing the hex string.
     #[error(transparent)]
