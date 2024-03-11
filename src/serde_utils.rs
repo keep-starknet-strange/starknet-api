@@ -1,5 +1,4 @@
 //! Utilities for serialising/deserialising hexadecimal values.
-use parity_scale_codec::{Decode, Encode};
 use serde::de::{Deserialize, Visitor};
 use serde::ser::{Serialize, SerializeTuple};
 use serde::Deserializer;
@@ -13,7 +12,11 @@ pub type PrefixedBytesAsHex<const N: usize> = BytesAsHex<N, true>;
 ///
 /// The `PREFIXED` generic type symbolize whether a string representation of the hex value should be
 /// prefixed by `0x` or not.
-#[derive(Debug, Eq, PartialEq, Encode, Decode)]
+#[derive(Debug, Eq, PartialEq)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub struct BytesAsHex<const N: usize, const PREFIXED: bool>(pub(crate) [u8; N]);
 
 impl<'de, const N: usize, const PREFIXED: bool> Deserialize<'de> for BytesAsHex<N, PREFIXED> {

@@ -8,7 +8,9 @@ license-file = "LICENSE"
 description = "Starknet Rust types related to computation and execution."
 
 [features]
+default = []
 testing = []
+parity-scale-codec = ["dep:parity-scale-codec"]
 
 [dependencies]
 cairo-lang-starknet-classes = { git = "https://github.com/bidzyyys/cairo.git", branch = "feature/scale-codec" }
@@ -23,9 +25,9 @@ starknet-crypto = "0.5.1"
 strum = "0.24.1"
 strum_macros = "0.24.3"
 thiserror = "1.0.31"
-parity-scale-codec = { version = "3.6.5", default-features = false, features = [
+parity-scale-codec = { version = "3.6.5", features = [
     "derive",
-]}
+], optional = true}
 
 [dev-dependencies]
 assert_matches = "1.5.0"

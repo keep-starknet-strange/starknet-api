@@ -1,9 +1,8 @@
 use cairo_lang_starknet_classes::casm_contract_class::CasmContractEntryPoint;
 use indexmap::IndexMap;
-use parity_scale_codec::{Decode, Encode};
 use serde::de::Error as DeserializationError;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use serde_json::{json, Value};
+use serde_json::Value;
 
 use crate::core::EntryPointSelector;
 use crate::serde_utils::deserialize_optional_contract_class_abi_entry_vector;
@@ -22,16 +21,18 @@ pub struct ContractClass {
 
 // TODO find a smarter way than using JSON
 // Start refactoring with `Program` struct
-impl Encode for ContractClass {
+#[cfg(feature = "parity-scale-codec")]
+impl parity_scale_codec::Encode for ContractClass {
     fn encode(&self) -> Vec<u8> {
-        let json_repr: String = json!(self).to_string();
+        let json_repr: String = serde_json::json!(self).to_string();
         json_repr.encode()
     }
 }
 
 // TODO find a smarter way than using JSON
 // Start refactoring with `Program` struct
-impl Decode for ContractClass {
+#[cfg(feature = "parity-scale-codec")]
+impl parity_scale_codec::Decode for ContractClass {
     fn decode<I: parity_scale_codec::Input>(
         input: &mut I,
     ) -> Result<Self, parity_scale_codec::Error> {
@@ -43,9 +44,13 @@ impl Decode for ContractClass {
 }
 
 /// A [ContractClass](`crate::deprecated_contract_class::ContractClass`) abi entry.
-#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
+#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 #[serde(tag = "type")]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub enum ContractClassAbiEntry {
     #[serde(rename = "event")]
     Event(EventAbiEntry),
@@ -60,7 +65,11 @@ pub enum ContractClassAbiEntry {
 }
 
 /// An event abi entry.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub struct EventAbiEntry {
     pub name: String,
     pub keys: Vec<TypedParameter>,
@@ -68,7 +77,11 @@ pub struct EventAbiEntry {
 }
 
 /// A function abi entry.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub struct FunctionAbiEntry {
     pub name: String,
     pub inputs: Vec<TypedParameter>,
@@ -78,7 +91,11 @@ pub struct FunctionAbiEntry {
 }
 
 /// A function state mutability.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub enum FunctionStateMutability {
     #[serde(rename = "view")]
     #[default]
@@ -86,7 +103,11 @@ pub enum FunctionStateMutability {
 }
 
 /// A struct abi entry.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub struct StructAbiEntry {
     pub name: String,
     pub size: u64,
@@ -94,7 +115,11 @@ pub struct StructAbiEntry {
 }
 
 /// A struct member for [StructAbiEntry](`crate::deprecated_contract_class::StructAbiEntry`).
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub struct StructMember {
     #[serde(flatten)]
     pub param: TypedParameter,
@@ -120,15 +145,17 @@ pub struct Program {
 }
 
 // TODO: Find out smarter way than `Program` -> Json -> SCALE
-impl Encode for Program {
+#[cfg(feature = "parity-scale-codec")]
+impl parity_scale_codec::Encode for Program {
     fn encode(&self) -> Vec<u8> {
-        let json_repr: String = json!(self).to_string();
+        let json_repr: String = serde_json::json!(self).to_string();
         json_repr.encode()
     }
 }
 
 // TODO: Find out smarter way than SCALE -> Json -> `Program`
-impl Decode for Program {
+#[cfg(feature = "parity-scale-codec")]
+impl parity_scale_codec::Decode for Program {
     fn decode<I: parity_scale_codec::Input>(
         input: &mut I,
     ) -> Result<Self, parity_scale_codec::Error> {
@@ -141,19 +168,11 @@ impl Decode for Program {
 
 /// An entry point type of a [ContractClass](`crate::deprecated_contract_class::ContractClass`).
 #[derive(
-    Debug,
-    Default,
-    Clone,
-    Copy,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+    Debug, Default, Clone, Copy, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 #[serde(deny_unknown_fields)]
 pub enum EntryPointType {
@@ -170,19 +189,10 @@ pub enum EntryPointType {
 }
 
 /// An entry point of a [ContractClass](`crate::deprecated_contract_class::ContractClass`).
-#[derive(
-    Debug,
-    Default,
-    Clone,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Default, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct EntryPoint {
     pub selector: EntryPointSelector,
@@ -201,7 +211,11 @@ impl TryFrom<CasmContractEntryPoint> for EntryPoint {
     }
 }
 
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub struct TypedParameter {
     pub name: String,
     pub r#type: String,
@@ -209,19 +223,11 @@ pub struct TypedParameter {
 
 /// The offset of an [EntryPoint](`crate::deprecated_contract_class::EntryPoint`).
 #[derive(
-    Debug,
-    Copy,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+    Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct EntryPointOffset(
     #[serde(deserialize_with = "number_or_string", serialize_with = "u64_to_hex")] pub u64,

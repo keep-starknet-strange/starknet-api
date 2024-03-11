@@ -1,11 +1,12 @@
-use parity_scale_codec::{Decode, Encode};
 use serde::{Deserialize, Serialize};
 
 use crate::hash::StarkFelt;
 use crate::StarknetApiError;
 
-#[derive(
-    Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize, Encode, Decode,
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub enum DataAvailabilityMode {
     L1 = 0,
@@ -36,19 +37,11 @@ impl From<DataAvailabilityMode> for StarkFelt {
 }
 
 #[derive(
-    Clone,
-    Default,
-    Copy,
-    Debug,
-    Deserialize,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd,
-    Serialize,
-    Encode,
-    Decode,
+    Clone, Default, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum L1DataAvailabilityMode {

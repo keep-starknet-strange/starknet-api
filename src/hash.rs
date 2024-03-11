@@ -1,7 +1,6 @@
 use std::fmt::{Debug, Display};
 use std::io::Error;
 
-use parity_scale_codec::{Decode, Encode};
 use serde::{Deserialize, Serialize};
 use starknet_crypto::{
     pedersen_hash as starknet_crypto_pedersen_hash, poseidon_hash_many, FieldElement,
@@ -41,7 +40,10 @@ pub fn pedersen_hash_array(felts: &[StarkFelt]) -> StarkHash {
 }
 
 /// A Poseidon hash.
-#[derive(Encode, Decode)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub struct PoseidonHash(pub StarkFelt);
 
 /// Computes Poseidon hash.
@@ -53,19 +55,10 @@ pub fn poseidon_hash_array(felts: &[StarkFelt]) -> PoseidonHash {
 
 // TODO: Move to a different crate.
 /// The StarkNet [field element](https://docs.starknet.io/documentation/architecture_and_concepts/Hashing/hash-functions/#domain_and_range).
-#[derive(
-    Copy,
-    Clone,
-    Eq,
-    PartialEq,
-    Default,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Copy, Clone, Eq, PartialEq, Default, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 #[serde(try_from = "PrefixedBytesAsHex<32_usize>", into = "PrefixedBytesAsHex<32_usize>")]
 pub struct StarkFelt(pub [u8; 32]);

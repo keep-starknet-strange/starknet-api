@@ -4,7 +4,6 @@ use std::sync::Arc;
 
 use derive_more::From;
 use indexmap::{IndexMap, IndexSet};
-use parity_scale_codec::{Decode, Encode};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
@@ -19,8 +18,10 @@ use crate::serde_utils::PrefixedBytesAsHex;
 use crate::StarknetApiError;
 
 /// A transaction.
-#[derive(
-    Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, Encode, Decode,
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub enum Transaction {
     /// A declare transaction.
@@ -36,7 +37,11 @@ pub enum Transaction {
 }
 
 /// A transaction output.
-#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
+#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub enum TransactionOutput {
     /// A declare transaction output.
     Declare(DeclareTransactionOutput),
@@ -83,19 +88,10 @@ impl TransactionOutput {
 }
 
 /// A declare V0 or V1 transaction (same schema but different version).
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct DeclareTransactionV0V1 {
     pub max_fee: Fee,
@@ -106,19 +102,10 @@ pub struct DeclareTransactionV0V1 {
 }
 
 /// A declare V2 transaction.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct DeclareTransactionV2 {
     pub max_fee: Fee,
@@ -130,8 +117,10 @@ pub struct DeclareTransactionV2 {
 }
 
 /// A declare V3 transaction.
-#[derive(
-    Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize, Encode, Decode,
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct DeclareTransactionV3 {
     pub resource_bounds: ResourceBoundsMapping,
@@ -147,8 +136,10 @@ pub struct DeclareTransactionV3 {
     pub account_deployment_data: AccountDeploymentData,
 }
 
-#[derive(
-    Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, Encode, Decode,
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub enum DeclareTransaction {
     V0(DeclareTransactionV0V1),
@@ -189,19 +180,10 @@ impl DeclareTransaction {
 }
 
 /// A deploy account V1 transaction.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct DeployAccountTransactionV1 {
     pub max_fee: Fee,
@@ -213,8 +195,10 @@ pub struct DeployAccountTransactionV1 {
 }
 
 /// A deploy account V3 transaction.
-#[derive(
-    Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, Encode, Decode,
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct DeployAccountTransactionV3 {
     pub resource_bounds: ResourceBoundsMapping,
@@ -229,8 +213,10 @@ pub struct DeployAccountTransactionV3 {
     pub paymaster_data: PaymasterData,
 }
 
-#[derive(
-    Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, From, Encode, Decode,
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, From)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub enum DeployAccountTransaction {
     V1(DeployAccountTransactionV1),
@@ -267,19 +253,10 @@ impl DeployAccountTransaction {
     }
 }
 /// A deploy transaction.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct DeployTransaction {
     pub version: TransactionVersion,
@@ -289,19 +266,10 @@ pub struct DeployTransaction {
 }
 
 /// An invoke V0 transaction.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct InvokeTransactionV0 {
     pub max_fee: Fee,
@@ -312,19 +280,10 @@ pub struct InvokeTransactionV0 {
 }
 
 /// An invoke V1 transaction.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct InvokeTransactionV1 {
     pub max_fee: Fee,
@@ -335,8 +294,10 @@ pub struct InvokeTransactionV1 {
 }
 
 /// An invoke V3 transaction.
-#[derive(
-    Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, Encode, Decode,
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct InvokeTransactionV3 {
     pub resource_bounds: ResourceBoundsMapping,
@@ -351,8 +312,10 @@ pub struct InvokeTransactionV3 {
     pub account_deployment_data: AccountDeploymentData,
 }
 
-#[derive(
-    Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, From, Encode, Decode,
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, From)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub enum InvokeTransaction {
     V0(InvokeTransactionV0),
@@ -401,19 +364,10 @@ impl InvokeTransaction {
 }
 
 /// An L1 handler transaction.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct L1HandlerTransaction {
     pub version: TransactionVersion,
@@ -424,7 +378,11 @@ pub struct L1HandlerTransaction {
 }
 
 /// A declare transaction output.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub struct DeclareTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -434,7 +392,11 @@ pub struct DeclareTransactionOutput {
 }
 
 /// A deploy-account transaction output.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub struct DeployAccountTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -445,7 +407,11 @@ pub struct DeployAccountTransactionOutput {
 }
 
 /// A deploy transaction output.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub struct DeployTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -456,7 +422,11 @@ pub struct DeployTransactionOutput {
 }
 
 /// An invoke transaction output.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub struct InvokeTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -466,7 +436,11 @@ pub struct InvokeTransactionOutput {
 }
 
 /// An L1 handler transaction output.
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub struct L1HandlerTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -476,7 +450,11 @@ pub struct L1HandlerTransactionOutput {
 }
 
 /// A transaction receipt.
-#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
+#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub struct TransactionReceipt {
     pub transaction_hash: TransactionHash,
     pub block_hash: BlockHash,
@@ -486,19 +464,10 @@ pub struct TransactionReceipt {
 }
 
 /// Transaction execution status.
-#[derive(
-    Debug,
-    Clone,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Default,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord, Default)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub enum TransactionExecutionStatus {
     #[serde(rename = "SUCCEEDED")]
@@ -524,8 +493,10 @@ pub enum TransactionExecutionStatus {
     PartialOrd,
     Ord,
     derive_more::Deref,
-    Encode,
-    Decode,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 #[serde(from = "PrefixedBytesAsHex<16_usize>", into = "PrefixedBytesAsHex<16_usize>")]
 pub struct Fee(pub u128);
@@ -562,8 +533,10 @@ impl From<Fee> for StarkFelt {
     PartialOrd,
     Ord,
     derive_more::Deref,
-    Encode,
-    Decode,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct TransactionHash(pub StarkHash);
 
@@ -575,36 +548,19 @@ impl Display for TransactionHash {
 
 /// A contract address salt.
 #[derive(
-    Debug,
-    Copy,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+    Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct ContractAddressSalt(pub StarkHash);
 
 /// A transaction signature.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct TransactionSignature(pub Vec<StarkFelt>);
 
@@ -622,8 +578,10 @@ pub struct TransactionSignature(pub Vec<StarkFelt>);
     PartialOrd,
     Ord,
     derive_more::Deref,
-    Encode,
-    Decode,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct TransactionVersion(pub StarkFelt);
 
@@ -642,19 +600,10 @@ impl TransactionVersion {
 }
 
 /// The calldata of a transaction.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct Calldata(pub Arc<Vec<StarkFelt>>);
 
@@ -666,19 +615,10 @@ macro_rules! calldata {
 }
 
 /// An L1 to L2 message.
-#[derive(
-    Debug,
-    Default,
-    Clone,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Default, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct MessageToL2 {
     pub from_address: EthAddress,
@@ -686,19 +626,10 @@ pub struct MessageToL2 {
 }
 
 /// An L2 to L1 message.
-#[derive(
-    Debug,
-    Default,
-    Clone,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Default, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct MessageToL1 {
     pub from_address: ContractAddress,
@@ -707,53 +638,26 @@ pub struct MessageToL1 {
 }
 
 /// The payload of [`MessageToL2`].
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct L1ToL2Payload(pub Vec<StarkFelt>);
 
 /// The payload of [`MessageToL1`].
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct L2ToL1Payload(pub Vec<StarkFelt>);
 
 /// An event.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct Event {
     pub from_address: ContractAddress,
@@ -762,19 +666,10 @@ pub struct Event {
 }
 
 /// An event content.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct EventContent {
     pub keys: Vec<EventKey>,
@@ -782,72 +677,38 @@ pub struct EventContent {
 }
 
 /// An event key.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct EventKey(pub StarkFelt);
 
 /// An event data.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct EventData(pub Vec<StarkFelt>);
 
 /// The index of a transaction in [BlockBody](`crate::block::BlockBody`).
 #[derive(
-    Debug,
-    Default,
-    Copy,
-    Clone,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+    Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct TransactionOffsetInBlock(pub u64);
 
 /// The index of an event in [TransactionOutput](`crate::transaction::TransactionOutput`).
 #[derive(
-    Debug,
-    Default,
-    Copy,
-    Clone,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+    Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct EventIndexInTransactionOutput(pub u64);
 
@@ -865,8 +726,10 @@ pub struct EventIndexInTransactionOutput(pub u64);
     PartialOrd,
     Serialize,
     derive_more::Deref,
-    Encode,
-    Decode,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 #[serde(from = "PrefixedBytesAsHex<8_usize>", into = "PrefixedBytesAsHex<8_usize>")]
 pub struct Tip(pub u64);
@@ -891,19 +754,11 @@ impl From<Tip> for StarkFelt {
 
 /// Execution resource.
 #[derive(
-    Clone,
-    Copy,
-    Debug,
-    Deserialize,
-    EnumIter,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd,
-    Serialize,
-    Encode,
-    Decode,
+    Clone, Copy, Debug, Deserialize, EnumIter, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub enum Resource {
     #[serde(rename = "L1_GAS")]
@@ -915,19 +770,11 @@ pub enum Resource {
 /// Fee bounds for an execution resource.
 /// TODO(Yael): add types ResourceAmount and ResourcePrice and use them instead of u64 and u128.
 #[derive(
-    Clone,
-    Copy,
-    Debug,
-    Default,
-    Deserialize,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd,
-    Serialize,
-    Encode,
-    Decode,
+    Clone, Copy, Debug, Default, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct ResourceBounds {
     // Specifies the maximum amount of each resource allowed for usage during the execution.
@@ -970,19 +817,10 @@ where
 }
 
 /// A mapping from execution resources to their corresponding fee bounds..
-#[derive(
-    Clone,
-    Debug,
-    Default,
-    Deserialize,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd,
-    Serialize,
-    Encode,
-    Decode,
+#[derive(Clone, Debug, Default, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct ResourceBoundsMapping(pub BTreeMap<Resource, ResourceBounds>);
 
@@ -1008,37 +846,19 @@ impl TryFrom<Vec<(Resource, ResourceBounds)>> for ResourceBoundsMapping {
 }
 
 /// Paymaster-related data.
-#[derive(
-    Clone,
-    Debug,
-    Default,
-    Deserialize,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd,
-    Serialize,
-    Encode,
-    Decode,
+#[derive(Clone, Debug, Default, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct PaymasterData(pub Vec<StarkFelt>);
 
 /// If nonempty, will contain the required data for deploying and initializing an account contract:
 /// its class hash, address salt and constructor calldata.
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct AccountDeploymentData(pub Vec<StarkFelt>);
 
@@ -1050,7 +870,8 @@ pub struct ExecutionResources {
     pub memory_holes: u64,
 }
 
-impl Encode for ExecutionResources {
+#[cfg(feature = "parity-scale-codec")]
+impl parity_scale_codec::Encode for ExecutionResources {
     fn size_hint(&self) -> usize {
         self.steps.size_hint()
             + self.builtin_instance_counter.len() * core::mem::size_of::<Builtin>()
@@ -1065,7 +886,8 @@ impl Encode for ExecutionResources {
     }
 }
 
-impl Decode for ExecutionResources {
+#[cfg(feature = "parity-scale-codec")]
+impl parity_scale_codec::Decode for ExecutionResources {
     fn decode<I: parity_scale_codec::Input>(
         input: &mut I,
     ) -> Result<Self, parity_scale_codec::Error> {
@@ -1079,7 +901,11 @@ impl Decode for ExecutionResources {
     }
 }
 
-#[derive(Hash, Debug, Deserialize, Serialize, Clone, Eq, PartialEq, Encode, Decode)]
+#[derive(Hash, Debug, Deserialize, Serialize, Clone, Eq, PartialEq)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub enum Builtin {
     #[serde(rename = "range_check_builtin_applications")]
     RangeCheck,

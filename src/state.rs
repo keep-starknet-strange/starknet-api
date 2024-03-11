@@ -1,9 +1,7 @@
 use std::fmt::Debug;
 
 use indexmap::IndexMap;
-use parity_scale_codec::{Decode, Encode};
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 
 use crate::block::{BlockHash, BlockNumber};
 use crate::core::{
@@ -19,7 +17,11 @@ pub type DeprecatedDeclaredClasses = IndexMap<ClassHash, DeprecatedContractClass
 
 /// The differences between two states before and after a block with hash block_hash
 /// and their respective roots.
-#[derive(Debug, Default, Clone, Eq, PartialEq, Deserialize, Serialize, Encode, Decode)]
+#[derive(Debug, Default, Clone, Eq, PartialEq, Deserialize, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
 pub struct StateUpdate {
     pub block_hash: BlockHash,
     pub new_root: GlobalRoot,
@@ -42,16 +44,18 @@ pub struct StateDiff {
 }
 // TODO find a smarter way than using JSON
 // Start refactoring with `Program` struct and then `DeprecatedContractClass`
-impl Encode for StateDiff {
+#[cfg(feature = "parity-scale-codec")]
+impl parity_scale_codec::Encode for StateDiff {
     fn encode(&self) -> Vec<u8> {
-        let json_repr: String = json!(self).to_string();
+        let json_repr: String = serde_json::json!(self).to_string();
         json_repr.encode()
     }
 }
 
 // TODO find a smarter way than using JSON
 // Start refactoring with `Program` struct and then `DeprecatedContractClass`
-impl Decode for StateDiff {
+#[cfg(feature = "parity-scale-codec")]
+impl parity_scale_codec::Decode for StateDiff {
     fn decode<I: parity_scale_codec::Input>(
         input: &mut I,
     ) -> Result<Self, parity_scale_codec::Error> {
@@ -110,7 +114,8 @@ impl From<StateDiff> for ThinStateDiff {
     }
 }
 
-impl Encode for ThinStateDiff {
+#[cfg(feature = "parity-scale-codec")]
+impl parity_scale_codec::Encode for ThinStateDiff {
     fn size_hint(&self) -> usize {
         (6 + self.storage_diffs.len())
             + self.deployed_contracts.len()
@@ -145,7 +150,8 @@ impl Encode for ThinStateDiff {
     }
 }
 
-impl Decode for ThinStateDiff {
+#[cfg(feature = "parity-scale-codec")]
+impl parity_scale_codec::Decode for ThinStateDiff {
     fn decode<I: parity_scale_codec::Input>(
         input: &mut I,
     ) -> Result<Self, parity_scale_codec::Error> {
@@ -178,19 +184,11 @@ impl Decode for ThinStateDiff {
 // States: S0       S1       S2
 // Blocks      B0->     B1->
 #[derive(
-    Debug,
-    Default,
-    Copy,
-    Clone,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+    Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct StateNumber(pub BlockNumber);
 
@@ -232,8 +230,10 @@ impl StateNumber {
     PartialOrd,
     Ord,
     derive_more::Deref,
-    Encode,
-    Decode,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct StorageKey(pub PatriciaKey);
 
@@ -267,7 +267,8 @@ pub struct ContractClass {
     pub abi: String,
 }
 
-impl Encode for ContractClass {
+#[cfg(feature = "parity-scale-codec")]
+impl parity_scale_codec::Encode for ContractClass {
     fn size_hint(&self) -> usize {
         self.sierra_program.size_hint()
             + 1
@@ -283,7 +284,8 @@ impl Encode for ContractClass {
     }
 }
 
-impl Decode for ContractClass {
+#[cfg(feature = "parity-scale-codec")]
+impl parity_scale_codec::Decode for ContractClass {
     fn decode<I: parity_scale_codec::Input>(
         input: &mut I,
     ) -> Result<Self, parity_scale_codec::Error> {
@@ -299,19 +301,11 @@ impl Decode for ContractClass {
 }
 
 #[derive(
-    Debug,
-    Default,
-    Clone,
-    Copy,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+    Debug, Default, Clone, Copy, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 #[serde(deny_unknown_fields)]
 pub enum EntryPointType {
@@ -328,19 +322,10 @@ pub enum EntryPointType {
 }
 
 /// An entry point of a [ContractClass](`crate::state::ContractClass`).
-#[derive(
-    Debug,
-    Default,
-    Clone,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+#[derive(Debug, Default, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct EntryPoint {
     pub function_idx: FunctionIndex,
@@ -348,18 +333,10 @@ pub struct EntryPoint {
 }
 
 #[derive(
-    Debug,
-    Copy,
-    Clone,
-    Default,
-    Eq,
-    PartialEq,
-    Hash,
-    Deserialize,
-    Serialize,
-    PartialOrd,
-    Ord,
-    Encode,
-    Decode,
+    Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
+)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
 pub struct FunctionIndex(pub u64);

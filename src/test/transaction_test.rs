@@ -1,7 +1,6 @@
-use indexmap::IndexMap;
-
-#[cfg(test)]
-mod execution_resources_scale_test {
+#[cfg(all(test, feature = "parity-scale-codec"))]
+mod execution_resources_psc_test {
+    use indexmap::IndexMap;
     use std::collections::hash_map::RandomState as HasherBuilder;
 
     use parity_scale_codec::{Decode, Encode};

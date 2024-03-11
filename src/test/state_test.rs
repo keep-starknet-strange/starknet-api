@@ -22,8 +22,8 @@ fn entry_point_offset_into_json_str() {
     assert_eq!(json!(offset), json!(format!("{:#x}", offset.0)));
 }
 
-#[cfg(test)]
-mod thin_state_diff_tests {
+#[cfg(all(test, feature = "parity-scale-codec"))]
+mod thin_state_diff_psc_tests {
     use parity_scale_codec::{Decode, Encode};
 
     use super::*;
@@ -78,8 +78,8 @@ mod thin_state_diff_tests {
     }
 }
 
-#[cfg(test)]
-mod contract_class_scale_test {
+#[cfg(all(test, feature = "parity-scale-codec"))]
+mod contract_class_scale_psc_test {
     use std::collections::hash_map::RandomState as HasherBuilder;
 
     use parity_scale_codec::{Decode, Encode};
