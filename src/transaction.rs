@@ -23,6 +23,7 @@ use crate::StarknetApiError;
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum Transaction {
     /// A declare transaction.
     Declare(DeclareTransaction),
@@ -42,6 +43,7 @@ pub enum Transaction {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum TransactionOutput {
     /// A declare transaction output.
     Declare(DeclareTransactionOutput),
@@ -93,6 +95,7 @@ impl TransactionOutput {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct DeclareTransactionV0V1 {
     pub max_fee: Fee,
     pub signature: TransactionSignature,
@@ -107,6 +110,7 @@ pub struct DeclareTransactionV0V1 {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct DeclareTransactionV2 {
     pub max_fee: Fee,
     pub signature: TransactionSignature,
@@ -122,6 +126,7 @@ pub struct DeclareTransactionV2 {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct DeclareTransactionV3 {
     pub resource_bounds: ResourceBoundsMapping,
     pub tip: Tip,
@@ -141,6 +146,7 @@ pub struct DeclareTransactionV3 {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum DeclareTransaction {
     V0(DeclareTransactionV0V1),
     V1(DeclareTransactionV0V1),
@@ -185,6 +191,7 @@ impl DeclareTransaction {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct DeployAccountTransactionV1 {
     pub max_fee: Fee,
     pub signature: TransactionSignature,
@@ -200,6 +207,7 @@ pub struct DeployAccountTransactionV1 {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct DeployAccountTransactionV3 {
     pub resource_bounds: ResourceBoundsMapping,
     pub tip: Tip,
@@ -218,6 +226,7 @@ pub struct DeployAccountTransactionV3 {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum DeployAccountTransaction {
     V1(DeployAccountTransactionV1),
     V3(DeployAccountTransactionV3),
@@ -258,6 +267,7 @@ impl DeployAccountTransaction {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct DeployTransaction {
     pub version: TransactionVersion,
     pub class_hash: ClassHash,
@@ -271,6 +281,7 @@ pub struct DeployTransaction {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct InvokeTransactionV0 {
     pub max_fee: Fee,
     pub signature: TransactionSignature,
@@ -285,6 +296,7 @@ pub struct InvokeTransactionV0 {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct InvokeTransactionV1 {
     pub max_fee: Fee,
     pub signature: TransactionSignature,
@@ -299,6 +311,7 @@ pub struct InvokeTransactionV1 {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct InvokeTransactionV3 {
     pub resource_bounds: ResourceBoundsMapping,
     pub tip: Tip,
@@ -317,6 +330,7 @@ pub struct InvokeTransactionV3 {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum InvokeTransaction {
     V0(InvokeTransactionV0),
     V1(InvokeTransactionV1),
@@ -369,6 +383,7 @@ impl InvokeTransaction {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct L1HandlerTransaction {
     pub version: TransactionVersion,
     pub nonce: Nonce,
@@ -383,6 +398,7 @@ pub struct L1HandlerTransaction {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct DeclareTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -397,6 +413,7 @@ pub struct DeclareTransactionOutput {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct DeployAccountTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -412,6 +429,7 @@ pub struct DeployAccountTransactionOutput {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct DeployTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -427,6 +445,7 @@ pub struct DeployTransactionOutput {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct InvokeTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -441,6 +460,7 @@ pub struct InvokeTransactionOutput {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct L1HandlerTransactionOutput {
     pub actual_fee: Fee,
     pub messages_sent: Vec<MessageToL1>,
@@ -455,6 +475,7 @@ pub struct L1HandlerTransactionOutput {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct TransactionReceipt {
     pub transaction_hash: TransactionHash,
     pub block_hash: BlockHash,
@@ -469,6 +490,7 @@ pub struct TransactionReceipt {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum TransactionExecutionStatus {
     #[serde(rename = "SUCCEEDED")]
     #[default]
@@ -498,6 +520,7 @@ pub enum TransactionExecutionStatus {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 #[serde(from = "PrefixedBytesAsHex<16_usize>", into = "PrefixedBytesAsHex<16_usize>")]
 pub struct Fee(pub u128);
 
@@ -538,6 +561,7 @@ impl From<Fee> for StarkFelt {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct TransactionHash(pub StarkHash);
 
 impl Display for TransactionHash {
@@ -554,6 +578,7 @@ impl Display for TransactionHash {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct ContractAddressSalt(pub StarkHash);
 
 /// A transaction signature.
@@ -562,6 +587,7 @@ pub struct ContractAddressSalt(pub StarkHash);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct TransactionSignature(pub Vec<StarkFelt>);
 
 /// A transaction version.
@@ -583,6 +609,7 @@ pub struct TransactionSignature(pub Vec<StarkFelt>);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct TransactionVersion(pub StarkFelt);
 
 impl TransactionVersion {
@@ -605,6 +632,7 @@ impl TransactionVersion {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct Calldata(pub Arc<Vec<StarkFelt>>);
 
 #[macro_export]
@@ -620,6 +648,7 @@ macro_rules! calldata {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct MessageToL2 {
     pub from_address: EthAddress,
     pub payload: L1ToL2Payload,
@@ -631,6 +660,7 @@ pub struct MessageToL2 {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct MessageToL1 {
     pub from_address: ContractAddress,
     pub to_address: EthAddress,
@@ -643,6 +673,7 @@ pub struct MessageToL1 {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct L1ToL2Payload(pub Vec<StarkFelt>);
 
 /// The payload of [`MessageToL1`].
@@ -651,6 +682,7 @@ pub struct L1ToL2Payload(pub Vec<StarkFelt>);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct L2ToL1Payload(pub Vec<StarkFelt>);
 
 /// An event.
@@ -659,6 +691,7 @@ pub struct L2ToL1Payload(pub Vec<StarkFelt>);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct Event {
     pub from_address: ContractAddress,
     #[serde(flatten)]
@@ -671,6 +704,7 @@ pub struct Event {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct EventContent {
     pub keys: Vec<EventKey>,
     pub data: EventData,
@@ -682,6 +716,7 @@ pub struct EventContent {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct EventKey(pub StarkFelt);
 
 /// An event data.
@@ -690,6 +725,7 @@ pub struct EventKey(pub StarkFelt);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct EventData(pub Vec<StarkFelt>);
 
 /// The index of a transaction in [BlockBody](`crate::block::BlockBody`).
@@ -700,6 +736,7 @@ pub struct EventData(pub Vec<StarkFelt>);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct TransactionOffsetInBlock(pub u64);
 
 /// The index of an event in [TransactionOutput](`crate::transaction::TransactionOutput`).
@@ -710,6 +747,7 @@ pub struct TransactionOffsetInBlock(pub u64);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct EventIndexInTransactionOutput(pub u64);
 
 /// Transaction fee tip.
@@ -731,6 +769,7 @@ pub struct EventIndexInTransactionOutput(pub u64);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 #[serde(from = "PrefixedBytesAsHex<8_usize>", into = "PrefixedBytesAsHex<8_usize>")]
 pub struct Tip(pub u64);
 
@@ -760,6 +799,7 @@ impl From<Tip> for StarkFelt {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum Resource {
     #[serde(rename = "L1_GAS")]
     L1Gas,
@@ -776,6 +816,7 @@ pub enum Resource {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct ResourceBounds {
     // Specifies the maximum amount of each resource allowed for usage during the execution.
     #[serde(serialize_with = "u64_to_hex", deserialize_with = "hex_to_u64")]
@@ -822,6 +863,7 @@ where
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct ResourceBoundsMapping(pub BTreeMap<Resource, ResourceBounds>);
 
 impl TryFrom<Vec<(Resource, ResourceBounds)>> for ResourceBoundsMapping {
@@ -851,6 +893,7 @@ impl TryFrom<Vec<(Resource, ResourceBounds)>> for ResourceBoundsMapping {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct PaymasterData(pub Vec<StarkFelt>);
 
 /// If nonempty, will contain the required data for deploying and initializing an account contract:
@@ -860,6 +903,7 @@ pub struct PaymasterData(pub Vec<StarkFelt>);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct AccountDeploymentData(pub Vec<StarkFelt>);
 
 /// The execution resources used by a transaction.
@@ -868,6 +912,26 @@ pub struct ExecutionResources {
     pub steps: u64,
     pub builtin_instance_counter: IndexMap<Builtin, u64>,
     pub memory_holes: u64,
+}
+
+#[cfg(feature = "scale-info")]
+impl scale_info::TypeInfo for ExecutionResources {
+    type Identity = Self;
+
+    fn type_info() -> scale_info::Type {
+        scale_info::Type::builder()
+            .path(scale_info::Path::new("ExecutionResources", module_path!()))
+            .composite(
+                scale_info::build::Fields::named()
+                    .field(|f| f.ty::<u64>().name("steps").type_name("u64"))
+                    .field(|f| {
+                        f.ty::<Vec<(Builtin, u64)>>()
+                            .name("builtin_instance_counter")
+                            .type_name("Vec<(Builtin, u64)>")
+                    })
+                    .field(|f| f.ty::<u64>().name("memory_holes").type_name("u64")),
+            )
+    }
 }
 
 #[cfg(feature = "parity-scale-codec")]
@@ -906,6 +970,7 @@ impl parity_scale_codec::Decode for ExecutionResources {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum Builtin {
     #[serde(rename = "range_check_builtin_applications")]
     RangeCheck,

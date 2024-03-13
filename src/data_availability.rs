@@ -8,6 +8,7 @@ use crate::StarknetApiError;
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum DataAvailabilityMode {
     L1 = 0,
     L2 = 1,
@@ -43,6 +44,7 @@ impl From<DataAvailabilityMode> for StarkFelt {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum L1DataAvailabilityMode {
     #[default]

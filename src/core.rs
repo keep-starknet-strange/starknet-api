@@ -18,6 +18,7 @@ use crate::{impl_from_through_intermediate, StarknetApiError};
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct ChainId(pub String);
 
 impl ChainId {
@@ -51,6 +52,7 @@ pub const BLOCK_HASH_TABLE_ADDRESS: ContractAddress = ContractAddress(PatriciaKe
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct ContractAddress(pub PatriciaKey);
 
 impl From<ContractAddress> for StarkFelt {
@@ -129,6 +131,7 @@ pub fn calculate_contract_address(
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct ClassHash(pub StarkHash);
 
 /// The hash of a compiled ContractClass.
@@ -150,6 +153,7 @@ pub struct ClassHash(pub StarkHash);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct CompiledClassHash(pub StarkHash);
 
 /// A general type for nonces.
@@ -171,6 +175,7 @@ pub struct CompiledClassHash(pub StarkHash);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct Nonce(pub StarkFelt);
 
 impl Nonce {
@@ -193,6 +198,7 @@ impl Nonce {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct EntryPointSelector(pub StarkHash);
 
 /// The root of the global state at a [Block](`crate::block::Block`)
@@ -215,6 +221,7 @@ pub struct EntryPointSelector(pub StarkHash);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct GlobalRoot(pub StarkHash);
 
 /// The commitment on the transactions in a [Block](`crate::block::Block`).
@@ -236,6 +243,7 @@ pub struct GlobalRoot(pub StarkHash);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct TransactionCommitment(pub StarkHash);
 
 /// The commitment on the events in a [Block](`crate::block::Block`).
@@ -257,6 +265,7 @@ pub struct TransactionCommitment(pub StarkHash);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct EventCommitment(pub StarkHash);
 
 /// A key for nodes of a Patricia tree.
@@ -278,6 +287,7 @@ pub struct EventCommitment(pub StarkHash);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct PatriciaKey(pub StarkHash);
 
 // 2**251
@@ -351,6 +361,7 @@ macro_rules! contract_address {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 #[serde(try_from = "PrefixedBytesAsHex<20_usize>", into = "PrefixedBytesAsHex<20_usize>")]
 pub struct EthAddress(pub H160);
 
@@ -398,6 +409,7 @@ impl From<EthAddress> for PrefixedBytesAsHex<20_usize> {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct SequencerPublicKey(pub PublicKey);
 
 #[derive(
@@ -407,4 +419,5 @@ pub struct SequencerPublicKey(pub PublicKey);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct SequencerContractAddress(pub ContractAddress);

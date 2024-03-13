@@ -11,6 +11,7 @@ use crate::hash::StarkFelt;
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum CryptoError {
     #[error("Invalid public key {0:?}.")]
     InvalidPublicKey(PublicKey),
@@ -30,6 +31,7 @@ pub enum CryptoError {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct PublicKey(pub StarkFelt);
 
 /// A signature.
@@ -40,6 +42,7 @@ pub struct PublicKey(pub StarkFelt);
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct Signature {
     pub r: StarkFelt,
     pub s: StarkFelt,

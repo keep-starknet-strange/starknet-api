@@ -19,6 +19,30 @@ pub struct ContractClass {
     pub entry_points_by_type: IndexMap<EntryPointType, Vec<EntryPoint>>,
 }
 
+#[cfg(feature = "scale-info")]
+impl scale_info::TypeInfo for ContractClass {
+    type Identity = Self;
+
+    fn type_info() -> scale_info::Type {
+        scale_info::Type::builder()
+            .path(scale_info::Path::new("ContractClass", module_path!()))
+            .composite(
+                scale_info::build::Fields::named()
+                    .field(|f| {
+                        f.ty::<Option<Vec<ContractClassAbiEntry>>>()
+                            .name("abi")
+                            .type_name("Option<Vec<ContractClassAbiEntry>>")
+                    })
+                    .field(|f| f.ty::<Program>().name("program").type_name("Program"))
+                    .field(|f| {
+                        f.ty::<Vec<(EntryPointType, Vec<EntryPoint>)>>()
+                            .name("program")
+                            .type_name("Vec<(EntryPointType, Vec<EntryPoint>)>")
+                    }),
+            )
+    }
+}
+
 // TODO find a smarter way than using JSON
 // Start refactoring with `Program` struct
 #[cfg(feature = "parity-scale-codec")]
@@ -51,6 +75,7 @@ impl parity_scale_codec::Decode for ContractClass {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum ContractClassAbiEntry {
     #[serde(rename = "event")]
     Event(EventAbiEntry),
@@ -70,6 +95,7 @@ pub enum ContractClassAbiEntry {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct EventAbiEntry {
     pub name: String,
     pub keys: Vec<TypedParameter>,
@@ -82,6 +108,7 @@ pub struct EventAbiEntry {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct FunctionAbiEntry {
     pub name: String,
     pub inputs: Vec<TypedParameter>,
@@ -96,6 +123,7 @@ pub struct FunctionAbiEntry {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum FunctionStateMutability {
     #[serde(rename = "view")]
     #[default]
@@ -108,6 +136,7 @@ pub enum FunctionStateMutability {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct StructAbiEntry {
     pub name: String,
     pub size: u64,
@@ -120,6 +149,7 @@ pub struct StructAbiEntry {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct StructMember {
     #[serde(flatten)]
     pub param: TypedParameter,
@@ -142,6 +172,15 @@ pub struct Program {
     pub main_scope: serde_json::Value,
     pub prime: serde_json::Value,
     pub reference_manager: serde_json::Value,
+}
+
+#[cfg(feature = "scale-info")]
+impl scale_info::TypeInfo for Program {
+    type Identity = String;
+
+    fn type_info() -> scale_info::Type {
+        Self::Identity::type_info()
+    }
 }
 
 // TODO: Find out smarter way than `Program` -> Json -> SCALE
@@ -174,6 +213,7 @@ impl parity_scale_codec::Decode for Program {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 #[serde(deny_unknown_fields)]
 pub enum EntryPointType {
     /// A constructor entry point.
@@ -194,6 +234,7 @@ pub enum EntryPointType {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct EntryPoint {
     pub selector: EntryPointSelector,
     pub offset: EntryPointOffset,
@@ -216,6 +257,7 @@ impl TryFrom<CasmContractEntryPoint> for EntryPoint {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct TypedParameter {
     pub name: String,
     pub r#type: String,
@@ -229,6 +271,7 @@ pub struct TypedParameter {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct EntryPointOffset(
     #[serde(deserialize_with = "number_or_string", serialize_with = "u64_to_hex")] pub u64,
 );

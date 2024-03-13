@@ -44,6 +44,7 @@ pub fn pedersen_hash_array(felts: &[StarkFelt]) -> StarkHash {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct PoseidonHash(pub StarkFelt);
 
 /// Computes Poseidon hash.
@@ -60,6 +61,7 @@ pub fn poseidon_hash_array(felts: &[StarkFelt]) -> PoseidonHash {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 #[serde(try_from = "PrefixedBytesAsHex<32_usize>", into = "PrefixedBytesAsHex<32_usize>")]
 pub struct StarkFelt(pub [u8; 32]);
 

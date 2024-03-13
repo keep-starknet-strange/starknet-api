@@ -17,6 +17,7 @@ pub type PrefixedBytesAsHex<const N: usize> = BytesAsHex<N, true>;
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct BytesAsHex<const N: usize, const PREFIXED: bool>(pub(crate) [u8; N]);
 
 impl<'de, const N: usize, const PREFIXED: bool> Deserialize<'de> for BytesAsHex<N, PREFIXED> {

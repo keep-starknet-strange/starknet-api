@@ -1,8 +1,8 @@
 #[cfg(all(test, feature = "parity-scale-codec"))]
 mod execution_resources_psc_test {
-    use indexmap::IndexMap;
     use std::collections::hash_map::RandomState as HasherBuilder;
 
+    use indexmap::IndexMap;
     use parity_scale_codec::{Decode, Encode};
 
     use super::*;

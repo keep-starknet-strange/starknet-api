@@ -22,6 +22,7 @@ pub type DeprecatedDeclaredClasses = IndexMap<ClassHash, DeprecatedContractClass
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct StateUpdate {
     pub block_hash: BlockHash,
     pub new_root: GlobalRoot,
@@ -42,6 +43,50 @@ pub struct StateDiff {
     pub nonces: IndexMap<ContractAddress, Nonce>,
     pub replaced_classes: IndexMap<ContractAddress, ClassHash>,
 }
+
+#[cfg(feature = "scale-info")]
+impl scale_info::TypeInfo for StateDiff {
+    type Identity = Self;
+
+    fn type_info() -> scale_info::Type {
+        scale_info::Type::builder()
+            .path(scale_info::Path::new("StateDiff", module_path!()))
+            .composite(
+                scale_info::build::Fields::named()
+                    .field(|f| {
+                        f.ty::<Vec<(ContractAddress, ClassHash)>>()
+                            .name("deployed_contracts")
+                            .type_name("Vec<(ContractAddress, ClassHash)>")
+                    })
+                    .field(|f| {
+                        f.ty::<Vec<(ContractAddress, Vec<(StorageKey, StarkFelt)>)>>()
+                            .name("storage_diffs")
+                            .type_name("Vec<(ContractAddress, Vec<(StorageKey, StarkFelt)>)>")
+                    })
+                    .field(|f| {
+                        f.ty::<Vec<(ClassHash, (CompiledClassHash, ContractClass))>>()
+                            .name("declared_classes")
+                            .type_name("Vec<(ClassHash, (CompiledClassHash, ContractClass))>")
+                    })
+                    .field(|f| {
+                        f.ty::<Vec<(ClassHash, DeprecatedContractClass)>>()
+                            .name("deprecated_declared_classes")
+                            .type_name("Vec<(ClassHash, DeprecatedContractClass)>")
+                    })
+                    .field(|f| {
+                        f.ty::<Vec<(ContractAddress, Nonce)>>()
+                            .name("nonces")
+                            .type_name("Vec<(ContractAddress, Nonce)>")
+                    })
+                    .field(|f| {
+                        f.ty::<Vec<(ContractAddress, ClassHash)>>()
+                            .name("replaced_classes")
+                            .type_name("Vec<(ContractAddress, ClassHash)>")
+                    }),
+            )
+    }
+}
+
 // TODO find a smarter way than using JSON
 // Start refactoring with `Program` struct and then `DeprecatedContractClass`
 #[cfg(feature = "parity-scale-codec")]
@@ -77,6 +122,49 @@ pub struct ThinStateDiff {
     pub deprecated_declared_classes: Vec<ClassHash>,
     pub nonces: IndexMap<ContractAddress, Nonce>,
     pub replaced_classes: IndexMap<ContractAddress, ClassHash>,
+}
+
+#[cfg(feature = "scale-info")]
+impl scale_info::TypeInfo for ThinStateDiff {
+    type Identity = Self;
+
+    fn type_info() -> scale_info::Type {
+        scale_info::Type::builder()
+            .path(scale_info::Path::new("ThinStateDiff", module_path!()))
+            .composite(
+                scale_info::build::Fields::named()
+                    .field(|f| {
+                        f.ty::<Vec<(ContractAddress, ClassHash)>>()
+                            .name("deployed_contracts")
+                            .type_name("Vec<(ContractAddress, ClassHash)>")
+                    })
+                    .field(|f| {
+                        f.ty::<Vec<(ContractAddress, Vec<(StorageKey, StarkFelt)>)>>()
+                            .name("storage_diffs")
+                            .type_name("Vec<(ContractAddress, Vec<(StorageKey, StarkFelt)>)>")
+                    })
+                    .field(|f| {
+                        f.ty::<Vec<(ClassHash, CompiledClassHash)>>()
+                            .name("declared_classes")
+                            .type_name("Vec<(ClassHash, (CompiledClassHash, ContractClass))>")
+                    })
+                    .field(|f| {
+                        f.ty::<Vec<ClassHash>>()
+                            .name("deprecated_declared_classes")
+                            .type_name("Vec<ClassHash>")
+                    })
+                    .field(|f| {
+                        f.ty::<Vec<(ContractAddress, Nonce)>>()
+                            .name("nonces")
+                            .type_name("Vec<(ContractAddress, Nonce)>")
+                    })
+                    .field(|f| {
+                        f.ty::<Vec<(ContractAddress, ClassHash)>>()
+                            .name("replaced_classes")
+                            .type_name("Vec<(ContractAddress, ClassHash)>")
+                    }),
+            )
+    }
 }
 
 impl ThinStateDiff {
@@ -190,6 +278,7 @@ impl parity_scale_codec::Decode for ThinStateDiff {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct StateNumber(pub BlockNumber);
 
 impl StateNumber {
@@ -235,6 +324,7 @@ impl StateNumber {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct StorageKey(pub PatriciaKey);
 
 impl From<StorageKey> for StarkFelt {
@@ -265,6 +355,28 @@ pub struct ContractClass {
     pub sierra_program: Vec<StarkFelt>,
     pub entry_points_by_type: IndexMap<EntryPointType, Vec<EntryPoint>>,
     pub abi: String,
+}
+
+#[cfg(feature = "scale-info")]
+impl scale_info::TypeInfo for ContractClass {
+    type Identity = Self;
+
+    fn type_info() -> scale_info::Type {
+        scale_info::Type::builder()
+            .path(scale_info::Path::new("ContractClass", module_path!()))
+            .composite(
+                scale_info::build::Fields::named()
+                    .field(|f| {
+                        f.ty::<Vec<StarkFelt>>().name("sierra_program").type_name("Vec<StarkFelt>")
+                    })
+                    .field(|f| {
+                        f.ty::<Vec<(EntryPointType, Vec<EntryPoint>)>>()
+                            .name("entry_points_by_type")
+                            .type_name("Vec<(EntryPointType, Vec<EntryPoint>)>")
+                    })
+                    .field(|f| f.ty::<String>().name("abi").type_name("String")),
+            )
+    }
 }
 
 #[cfg(feature = "parity-scale-codec")]
@@ -307,6 +419,7 @@ impl parity_scale_codec::Decode for ContractClass {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 #[serde(deny_unknown_fields)]
 pub enum EntryPointType {
     /// A constructor entry point.
@@ -327,6 +440,7 @@ pub enum EntryPointType {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct EntryPoint {
     pub function_idx: FunctionIndex,
     pub selector: EntryPointSelector,
@@ -339,4 +453,5 @@ pub struct EntryPoint {
     feature = "parity-scale-codec",
     derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
 )]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct FunctionIndex(pub u64);
