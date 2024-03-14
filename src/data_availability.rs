@@ -4,6 +4,11 @@ use crate::hash::StarkFelt;
 use crate::StarknetApiError;
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum DataAvailabilityMode {
     L1 = 0,
     L2 = 1,
@@ -35,6 +40,11 @@ impl From<DataAvailabilityMode> for StarkFelt {
 #[derive(
     Clone, Default, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum L1DataAvailabilityMode {
     #[default]

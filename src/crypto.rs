@@ -1,9 +1,5 @@
 //! Cryptographic utilities.
 //! This module provides cryptographic utilities.
-#[cfg(test)]
-#[path = "crypto_test.rs"]
-mod crypto_test;
-
 use serde::{Deserialize, Serialize};
 use starknet_crypto::FieldElement;
 
@@ -11,6 +7,11 @@ use crate::hash::StarkFelt;
 
 /// An error that can occur during cryptographic operations.
 #[derive(thiserror::Error, Clone, Debug)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub enum CryptoError {
     #[error("Invalid public key {0:?}.")]
     InvalidPublicKey(PublicKey),
@@ -26,12 +27,22 @@ pub enum CryptoError {
 #[derive(
     Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct PublicKey(pub StarkFelt);
 
 /// A signature.
 #[derive(
     Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct Signature {
     pub r: StarkFelt,
     pub s: StarkFelt,

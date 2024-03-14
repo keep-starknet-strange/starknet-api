@@ -1,5 +1,4 @@
-use super::verify_block_signature;
-use crate::block::{BlockHash, BlockNumber, BlockSignature};
+use crate::block::{verify_block_signature, BlockHash, BlockNumber, BlockSignature};
 use crate::core::{GlobalRoot, SequencerPublicKey};
 use crate::crypto::{PublicKey, Signature};
 use crate::hash::StarkFelt;

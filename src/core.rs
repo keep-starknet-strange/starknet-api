@@ -1,7 +1,3 @@
-#[cfg(test)]
-#[path = "core_test.rs"]
-mod core_test;
-
 use std::fmt::Debug;
 
 use derive_more::Display;
@@ -18,6 +14,11 @@ use crate::{impl_from_through_intermediate, StarknetApiError};
 
 /// A chain id.
 #[derive(Clone, Debug, Display, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord)]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct ChainId(pub String);
 
 impl ChainId {
@@ -47,6 +48,11 @@ pub const BLOCK_HASH_TABLE_ADDRESS: ContractAddress = ContractAddress(PatriciaKe
     Ord,
     derive_more::Deref,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct ContractAddress(pub PatriciaKey);
 
 impl From<ContractAddress> for StarkFelt {
@@ -121,6 +127,11 @@ pub fn calculate_contract_address(
     Display,
     derive_more::Deref,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct ClassHash(pub StarkHash);
 
 /// The hash of a compiled ContractClass.
@@ -138,6 +149,11 @@ pub struct ClassHash(pub StarkHash);
     Ord,
     Display,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct CompiledClassHash(pub StarkHash);
 
 /// A general type for nonces.
@@ -155,6 +171,11 @@ pub struct CompiledClassHash(pub StarkHash);
     Ord,
     derive_more::Deref,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct Nonce(pub StarkFelt);
 
 impl Nonce {
@@ -173,6 +194,11 @@ impl Nonce {
 #[derive(
     Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct EntryPointSelector(pub StarkHash);
 
 /// The root of the global state at a [Block](`crate::block::Block`)
@@ -191,6 +217,11 @@ pub struct EntryPointSelector(pub StarkHash);
     Ord,
     Display,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct GlobalRoot(pub StarkHash);
 
 /// The commitment on the transactions in a [Block](`crate::block::Block`).
@@ -208,6 +239,11 @@ pub struct GlobalRoot(pub StarkHash);
     Ord,
     Display,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct TransactionCommitment(pub StarkHash);
 
 /// The commitment on the events in a [Block](`crate::block::Block`).
@@ -225,6 +261,11 @@ pub struct TransactionCommitment(pub StarkHash);
     Ord,
     Display,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct EventCommitment(pub StarkHash);
 
 /// A key for nodes of a Patricia tree.
@@ -242,7 +283,12 @@ pub struct EventCommitment(pub StarkHash);
     Ord,
     derive_more:: Deref,
 )]
-pub struct PatriciaKey(StarkHash);
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
+pub struct PatriciaKey(pub StarkHash);
 
 // 2**251
 pub const PATRICIA_KEY_UPPER_BOUND: &str =
@@ -311,6 +357,11 @@ macro_rules! contract_address {
 #[derive(
     Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 #[serde(try_from = "PrefixedBytesAsHex<20_usize>", into = "PrefixedBytesAsHex<20_usize>")]
 pub struct EthAddress(pub H160);
 
@@ -354,9 +405,19 @@ impl From<EthAddress> for PrefixedBytesAsHex<20_usize> {
 #[derive(
     Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct SequencerPublicKey(pub PublicKey);
 
 #[derive(
     Debug, Default, Clone, Copy, Eq, PartialEq, Hash, Deserialize, Serialize, PartialOrd, Ord,
 )]
+#[cfg_attr(
+    feature = "parity-scale-codec",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct SequencerContractAddress(pub ContractAddress);
